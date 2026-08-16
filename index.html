@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialLoad - Download TikTok, Instagram & YouTube</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; scroll-behavior: smooth; }
+        .service-btn.active { background-color: #2563eb; color: white; border-color: #3b82f6; }
+        .feature-card:hover { transform: translateY(-5px); transition: 0.3s; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="p-6 max-w-6xl mx-auto flex justify-between items-center border-b border-gray-800">
+        <div class="text-2xl font-black text-blue-500 tracking-tighter">SOCIAL<span class="text-white">LOAD</span></div>
+        <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-400">
+            <a href="#how-to" class="hover:text-white">How it works</a>
+            <a href="#features" class="hover:text-white">Features</a>
+            <a href="#faq" class="hover:text-white">FAQ</a>
+        </div>
+    </nav>
+
+    <header class="flex flex-col items-center justify-center pt-16 pb-10 px-4">
+        <h1 id="mainTitle" class="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight">TikTok Downloader</h1>
+        <p id="mainDesc" class="text-gray-400 text-center mb-10 max-w-2xl text-lg">Download TikTok videos without watermark online. High-speed, HD quality, and totally free.</p>
+
+        <!-- Tool Switcher with Thumbnail Option -->
+        <div class="flex flex-wrap justify-center gap-2 p-1.5 bg-[#1e293b] rounded-full mb-8 border border-gray-700 shadow-xl">
+            <button onclick="setService('tiktok', this)" class="service-btn active px-6 py-2.5 rounded-full text-sm font-bold transition">TikTok</button>
+            <button onclick="setService('instagram', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">Instagram</button>
+            <button onclick="setService('youtube', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">YouTube</button>
+            <button onclick="setService('thumbnail', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">Thumbnail HD</button>
+        </div>
+
+        <div class="w-full max-w-3xl bg-[#1e293b] p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-3 border border-gray-700">
+            <input type="text" id="videoUrl" placeholder="Paste link here..." 
+                   class="flex-1 bg-transparent p-4 outline-none text-lg text-white placeholder-gray-500">
+            <button onclick="fetchVideo()" id="mainBtn" 
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-black py-4 px-12 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/20">
+                DOWNLOAD
+            </button>
+        </div>
+
+        <div id="loader" class="mt-8 hidden flex flex-col items-center">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-2"></div>
+            <p class="text-sm text-gray-500">Processing media...</p>
+        </div>
+
+        <!-- Result Card with all 3 Download Buttons -->
+        <div id="resultCard" class="mt-12 w-full max-w-md bg-[#1e293b] rounded-3xl overflow-hidden hidden shadow-2xl border border-gray-700">
+            <div class="relative h-56">
+                <img id="vidThumb" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1e293b] via-transparent to-transparent"></div>
+                <div id="vidTitle" class="absolute bottom-4 left-4 font-bold text-white text-base pr-4 line-clamp-2">Media Title</div>
+            </div>
+            <div class="p-6 space-y-3">
+                <a id="mp4Btn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-green-600 hover:bg-green-500 text-white font-black py-3.5 rounded-xl transition-all">
+                    <span>🎬</span> <span>DOWNLOAD MP4 (HD)</span>
+                </a>
+                <a id="mp3Btn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white font-black py-3.5 rounded-xl border border-gray-600 transition-all">
+                    <span>🎵</span> <span>DOWNLOAD MP3 (AUDIO)</span>
+                </a>
+                <a id="thumbBtn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-xl transition-all">
+                    <span>🖼️</span> <span>DOWNLOAD THUMBNAIL (HD)</span>
+                </a>
+                <button onclick="resetSearch()" class="w-full text-gray-500 text-xs hover:text-white mt-2 font-medium">Clear and Download Another</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="max-w-6xl mx-auto py-20 px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
+                <div class="text-4xl mb-4">♾️</div>
+                <h3 class="text-xl font-bold mb-2">Unlimited Saves</h3>
+                <p class="text-gray-400 text-sm">Save as many videos and images as you want without restrictions.</p>
+            </div>
+            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
+                <div class="text-4xl mb-4">🚫</div>
+                <h3 class="text-xl font-bold mb-2">No Watermark</h3>
+                <p class="text-gray-400 text-sm">Download clean versions of videos with zero logos or overlays.</p>
+            </div>
+            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
+                <div class="text-4xl mb-4">⚡</div>
+                <h3 class="text-xl font-bold mb-2">HD Thumbnails & MP3</h3>
+                <p class="text-gray-400 text-sm">Grab high-resolution cover artwork and extracted audio tracks instantly.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="p-10 text-center text-gray-600 border-t border-gray-900 text-sm">
+        <p>© 2026 SocialLoad Team - Expert Video Downloader</p>
+    </footer>
+
+    <script>
+        let currentService = 'tiktok';
+
+        function setService(service, btn) {
+            currentService = service;
+            const titles = {
+                'tiktok': ['TikTok Downloader', 'Download TikTok videos without watermark online.'],
+                'instagram': ['Instagram Downloader', 'Save Reels, IGTV, and Instagram videos in MP4 format.'],
+                'youtube': ['YouTube Downloader', 'Download YouTube videos and Shorts in high quality.'],
+                'thumbnail': ['Thumbnail Downloader', 'Download full HD cover images from YouTube, TikTok, and Instagram.']
+            };
+            document.getElementById('mainTitle').innerText = titles[service][0];
+            document.getElementById('mainDesc').innerText = titles[service][1];
+            
+            document.querySelectorAll('.service-btn').forEach(b => {
+                b.classList.remove('active', 'text-white');
+                b.classList.add('text-gray-400');
+            });
+            btn.classList.add('active', 'text-white');
+            resetSearch();
+        }
+
+        async function fetchVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            if(!url) return alert("Please paste a link first!");
+
+            document.getElementById('mainBtn').disabled = true;
+            document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('resultCard').classList.add('hidden');
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/download?url=${encodeURIComponent(url)}&service=${currentService}`);
+                const data = await response.json();
+
+                if(data.result) {
+                    const thumbUrl = data.thumbnail || 'https://via.placeholder.com/400x225?text=No+Thumbnail';
+                    document.getElementById('vidThumb').src = thumbUrl;
+                    document.getElementById('vidTitle').innerText = data.title;
+                    document.getElementById('mp4Btn').href = data.result;
+                    document.getElementById('mp3Btn').href = `http://127.0.0.1:5000/download?url=${encodeURIComponent(url)}&service=${currentService}&mode=mp3_direct`;
+                    
+                    // Direct link for the thumbnail button
+                    document.getElementById('thumbBtn').href = thumbUrl;
+
+                    document.getElementById('resultCard').classList.remove('hidden');
+                } else { 
+                    alert("Failed to fetch link. Make sure the link is public."); 
+                }
+            } catch (e) { 
+                alert("Server error. Ensure python app.py is running in the terminal."); 
+            } finally {
+                document.getElementById('mainBtn').disabled = false;
+                document.getElementById('loader').classList.add('hidden');
+            }
+        }
+
+        function resetSearch() {
+            document.getElementById('resultCard').classList.add('hidden');
+            document.getElementById('videoUrl').value = '';
+        }
+    </script>
+</body>
+</html>
