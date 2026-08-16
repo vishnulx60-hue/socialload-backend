@@ -1,359 +1,364 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastVideoSave - Fast & Free Online Video & Reels Downloader</title>
-    
+    <title>FastSnap - Lightning Fast Media & Video Downloader</title>
+
     <!-- Tab Icon (Favicon) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-    
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="FastVideoSave is a free online tool to download Instagram reels, YouTube videos, TikTok clips, and photos in full HD MP4, MP3, or JPG with no watermark.">
-    <meta name="keywords" content="instagram reels download, video downloader, fast video save, save reels, no watermark, tiktok download, mp3 download">
+    <meta name="description" content="FastSnap is a high-speed media downloader to save Instagram Reels, TikTok videos without watermarks, YouTube clips, and high-bitrate audio directly to your device.">
+    <meta name="keywords" content="FastSnap, reels downloader, tiktok downloader no watermark, video downloader, audio extractor, online media saver">
     <meta name="robots" content="index, follow">
 
-    <!-- Tailwind CSS & Lucide Icons -->
+    <!-- Fonts & Tailwind CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #cbd5e1; }
-        .gradient-text { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .ad-box { border: 1px dashed #334155; background: rgba(15, 23, 42, 0.6); }
-        .format-tab.active { background-color: #2563eb; color: #ffffff; border-color: #3b82f6; }
+        body {
+            background-color: #080c16;
+            color: #f1f5f9;
+        }
+        .glow-bg {
+            background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.06) 35%, transparent 70%);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-input {
+            background: rgba(2, 6, 23, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus-within {
+            border-color: #6366f1;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.35);
+        }
+        .gradient-headline {
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 70%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
-    <!-- 1. Header Navigation -->
-    <header class="border-b border-slate-800/80 bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="p-2 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/25">
-                    <i data-lucide="zap" class="w-5 h-5"></i>
+    <!-- Background Ambient Glow -->
+    <div class="absolute inset-0 glow-bg pointer-events-none -z-10"></div>
+
+    <!-- 1. Header -->
+    <header class="border-b border-slate-800/60 bg-[#080c16]/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="p-2 bg-gradient-to-tr from-brand-600 via-indigo-500 to-cyan-400 rounded-xl text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
+                    <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
                 </div>
-                <span class="text-xl sm:text-2xl font-black tracking-tight text-white">FastVideo<span class="text-blue-500">Save</span></span>
-            </div>
-            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-                <a href="#how-to" class="hover:text-white transition">How it Works</a>
+                <span class="text-2xl font-extrabold tracking-tight text-white">Fast<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Snap</span></span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#how-it-works" class="hover:text-white transition">How it Works</a>
                 <a href="#features" class="hover:text-white transition">Features</a>
+                <a href="#supported" class="hover:text-white transition">Platforms</a>
                 <a href="#faq" class="hover:text-white transition">FAQ</a>
-                <a href="#dmca" class="hover:text-white transition">DMCA</a>
             </nav>
+
+            <a href="#downloader" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/60 transition">
+                <i data-lucide="download-cloud" class="w-3.5 h-3.5 text-cyan-400"></i> Get Started
+            </a>
         </div>
     </header>
 
-    <!-- 2. Top Header Ad Banner (Responsive Leaderboard 728x90) -->
-    <div class="max-w-4xl mx-auto px-4 pt-6 w-full">
-        <div class="ad-box min-h-[90px] rounded-xl flex flex-col items-center justify-center p-3 text-xs text-slate-500 font-mono text-center">
-            <span>[ ADVERTISEMENT BANNER - TOP ]</span>
-            <span class="text-[10px] text-slate-600 mt-1">Place Google AdSense or Adsterra Header Banner Script Here</span>
-        </div>
-    </div>
-
-    <!-- 3. Main Hero / Input Tool -->
-    <main class="max-w-4xl mx-auto px-4 pt-8 pb-12 w-full text-center">
-        <!-- Content Type Tabs -->
-        <div class="inline-flex flex-wrap justify-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-2xl mb-6" id="formatTabs">
-            <button onclick="setMode('video')" class="format-tab active px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition text-slate-300">
-                <i data-lucide="video" class="w-4 h-4 text-blue-400"></i> Video / Reels
-            </button>
-            <button onclick="setMode('audio')" class="format-tab px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition text-slate-300">
-                <i data-lucide="music" class="w-4 h-4 text-purple-400"></i> Audio (MP3)
-            </button>
-            <button onclick="setMode('photo')" class="format-tab px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition text-slate-300">
-                <i data-lucide="image" class="w-4 h-4 text-emerald-400"></i> Photo / Thumbnail
-            </button>
+    <!-- 2. Hero & Download Engine Section -->
+    <main id="downloader" class="max-w-4xl mx-auto px-4 sm:px-6 pt-14 pb-16 w-full text-center">
+        <!-- Floating Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-6 shadow-inner">
+            <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            Version 2.0 • Ultra HD & MP3 Processing
         </div>
 
-        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-3">
-            Fastest Tool to Download <span class="gradient-text">Reels & Videos</span>
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight gradient-headline mb-4 leading-tight">
+            Save Any Social Media <br class="hidden sm:inline">In One Snap.
         </h1>
-        
-        <!-- Trust Badges -->
-        <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-400 mb-8">
-            <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> No Logo / Watermark</span>
-            <span class="text-slate-700">•</span>
-            <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> High Original Quality</span>
-            <span class="text-slate-700">•</span>
-            <span class="flex items-center gap-1.5"><i data-lucide="infinity" class="w-4 h-4 text-blue-400"></i> 100% Free & Unlimited</span>
-        </div>
+        <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-10 leading-relaxed">
+            Download Reels, Shorts, video clips, and high-bitrate audio from Instagram, TikTok, YouTube, and X without logos or watermarks.
+        </p>
 
-        <!-- Download Input Box -->
-        <div class="relative flex flex-col sm:flex-row gap-2 bg-slate-900 border border-slate-700/80 p-2.5 rounded-2xl shadow-2xl">
-            <div class="flex items-center pl-3 flex-1 gap-3">
-                <i data-lucide="link" class="w-5 h-5 text-slate-500"></i>
-                <input type="text" id="videoUrl" placeholder="Paste link here (Instagram Reels, YouTube, TikTok, X)..." class="w-full bg-transparent text-white placeholder-slate-500 outline-none text-sm py-2">
-                <button onclick="pasteClipboard()" type="button" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1">
-                    <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Paste
+        <!-- Tool Container -->
+        <div class="glass-panel p-4 sm:p-6 rounded-3xl shadow-2xl border border-slate-800 relative">
+            <!-- Platform Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-6" id="platformTabs">
+                <button onclick="setPlatform('all')" class="tab-btn tab-active px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition duration-200">
+                    <i data-lucide="layers" class="w-4 h-4"></i> Auto Detect
+                </button>
+                <button onclick="setPlatform('instagram')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                    <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> Instagram
+                </button>
+                <button onclick="setPlatform('tiktok')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                    <i data-lucide="film" class="w-4 h-4 text-cyan-400"></i> TikTok
+                </button>
+                <button onclick="setPlatform('youtube')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                    <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube
+                </button>
+                <button onclick="setPlatform('twitter')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                    <i data-lucide="twitter" class="w-4 h-4 text-sky-400"></i> Twitter / X
                 </button>
             </div>
-            <button onclick="fetchDownload()" id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30">
-                <i data-lucide="download" class="w-5 h-5"></i> Download Video
-            </button>
-        </div>
 
-        <div class="mt-3 flex justify-end text-xs">
-            <a href="#dmca" class="text-slate-500 hover:text-slate-400 flex items-center gap-1">
-                <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Report an issue
-            </a>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div id="loader" class="hidden my-8">
-            <div class="inline-flex items-center gap-3 bg-slate-800 px-6 py-3 rounded-xl border border-slate-700 text-sm text-slate-300">
-                <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-blue-400"></i> Fetching media from source servers...
+            <!-- Input Bar -->
+            <div class="glass-input rounded-2xl p-2 flex flex-col sm:flex-row gap-2 transition-all">
+                <div class="flex items-center pl-3.5 flex-1 gap-3">
+                    <i data-lucide="link-2" class="w-5 h-5 text-slate-500"></i>
+                    <input type="text" id="mediaUrl" placeholder="Paste link here (e.g. Instagram Reel, TikTok, Shorts)..." class="w-full bg-transparent text-white placeholder-slate-500 outline-none text-sm py-2.5">
+                    <button onclick="pasteClipboard()" type="button" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5 flex-shrink-0">
+                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Paste
+                    </button>
+                </div>
+                <button onclick="fetchDownload()" id="downloadBtn" class="bg-gradient-to-r from-brand-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white font-bold px-8 py-3.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25 flex-shrink-0">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Download
+                </button>
             </div>
-        </div>
 
-        <!-- Result Box -->
-        <div id="resultBox" class="hidden mt-8 text-left bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-2xl mx-auto">
-            <div class="flex flex-col sm:flex-row gap-5 items-center">
-                <img id="thumbImg" src="" alt="Thumbnail" class="w-full sm:w-44 h-32 object-cover rounded-xl border border-slate-800 bg-slate-950">
-                <div class="flex-1 w-full">
-                    <h3 id="videoTitle" class="font-bold text-white text-base line-clamp-2 mb-4">Video Title</h3>
-                    <div class="flex flex-wrap gap-2.5">
-                        <a id="mp4Btn" href="#" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-md">
-                            <i data-lucide="video" class="w-4 h-4"></i> Download MP4 (HD)
-                        </a>
-                        <a id="mp3Btn" href="#" target="_blank" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-md">
-                            <i data-lucide="music" class="w-4 h-4"></i> Download MP3 Audio
-                        </a>
+            <!-- Progress Spinner -->
+            <div id="loader" class="hidden my-8">
+                <div class="inline-flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-6 py-3.5 rounded-2xl text-sm text-slate-300 shadow-xl">
+                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-brand-500"></i>
+                    <span>Analyzing link & generating media stream...</span>
+                </div>
+            </div>
+
+            <!-- Download Result Showcase -->
+            <div id="resultBox" class="hidden mt-8 text-left bg-slate-900/90 border border-slate-800/90 p-5 sm:p-6 rounded-2xl shadow-xl max-w-xl mx-auto">
+                <div class="flex flex-col sm:flex-row gap-5 items-center">
+                    <img id="thumbImg" src="" alt="Thumbnail" class="w-full sm:w-44 h-32 object-cover rounded-xl border border-slate-800 bg-slate-950 shadow-md">
+                    <div class="flex-1 w-full">
+                        <h3 id="videoTitle" class="font-bold text-white text-sm sm:text-base line-clamp-2 mb-4 leading-snug">Media Title</h3>
+                        <div class="flex flex-wrap gap-2.5">
+                            <a id="mp4Btn" href="#" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
+                                <i data-lucide="video" class="w-4 h-4"></i> Download MP4 (HD)
+                            </a>
+                            <a id="mp3Btn" href="#" target="_blank" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-lg shadow-indigo-600/20">
+                                <i data-lucide="music" class="w-4 h-4"></i> Download MP3
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Trust Features Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <div class="glass-panel p-4 rounded-2xl text-center">
+                <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400 mx-auto mb-2"></i>
+                <div class="text-xs font-bold text-white">No Watermarks</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Clean video files</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl text-center">
+                <i data-lucide="zap" class="w-6 h-6 text-amber-400 mx-auto mb-2"></i>
+                <div class="text-xs font-bold text-white">Instant Fetch</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">High-speed engine</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl text-center">
+                <i data-lucide="award" class="w-6 h-6 text-cyan-400 mx-auto mb-2"></i>
+                <div class="text-xs font-bold text-white">Original Quality</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Up to 4K resolution</div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl text-center">
+                <i data-lucide="lock" class="w-6 h-6 text-indigo-400 mx-auto mb-2"></i>
+                <div class="text-xs font-bold text-white">100% Anonymous</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">No login required</div>
+            </div>
+        </div>
     </main>
 
-    <!-- 4. Native In-Content Ad Placeholder -->
-    <div class="max-w-4xl mx-auto px-4 py-4 w-full">
-        <div class="ad-box min-h-[100px] rounded-xl flex flex-col items-center justify-center p-4 text-xs text-slate-500 font-mono text-center">
-            <span>[ NATIVE IN-FEED AD SLOT ]</span>
-            <span class="text-[10px] text-slate-600 mt-1">High-CTR Ad Unit Placed Directly Under Conversion Area</span>
+    <!-- 3. How It Works Section -->
+    <section id="how-it-works" class="max-w-5xl mx-auto px-4 sm:px-6 py-16 w-full border-t border-slate-800/60">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Download in 3 Simple Steps</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2">Fast, browser-based, and zero installation required.</p>
         </div>
-    </div>
 
-    <!-- 5. SEO Introduction Paragraphs -->
-    <section class="max-w-4xl mx-auto px-4 py-8 text-center text-sm leading-relaxed text-slate-400">
-        <p class="mb-4">
-            <strong class="text-slate-200">FastVideoSave</strong> is an online free and fast tool which helps you to download Instagram reels videos, YouTube clips, TikToks, and save them directly to your device. You can save any reels or videos to your phone or computer to view them offline anytime.
-        </p>
-        <p>
-            We do not require any information to access our tool, so you don't need to worry about providing login details. We do not charge anything for using our service—this is a lifetime free service that can be used to download an unlimited amount of media.
-        </p>
-    </section>
-
-    <!-- 6. Step-by-Step Instructions -->
-    <section id="how-to" class="max-w-4xl mx-auto px-4 py-10 w-full">
-        <h2 class="text-2xl font-bold text-center text-white mb-2">Steps to Download Reels & Videos</h2>
-        <p class="text-xs text-slate-400 text-center mb-8">Here's a quick and easy way to save your favorite media:</p>
-        
-        <div class="grid md:grid-cols-3 gap-5">
-            <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center">
-                <div class="w-12 h-12 bg-blue-600/10 text-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-lg border border-blue-500/20">1</div>
-                <h3 class="font-bold text-white text-sm mb-1.5">Copy Link</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Copy the link/URL of the video or reel from the app or website.</p>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-lg mb-5">1</div>
+                <h3 class="font-bold text-white text-base mb-2">Copy Video Link</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Open Instagram, TikTok, or YouTube, tap the share icon, and select "Copy Link".</p>
             </div>
-            <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center">
-                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-lg border border-indigo-500/20">2</div>
-                <h3 class="font-bold text-white text-sm mb-1.5">Paste URL</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Paste the link into the input box above and select your format.</p>
+            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
+                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-black text-lg mb-5">2</div>
+                <h3 class="font-bold text-white text-base mb-2">Paste into FastSnap</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Paste your copied link into the search bar and click the Download button.</p>
             </div>
-            <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl text-center">
-                <div class="w-12 h-12 bg-emerald-600/10 text-emerald-400 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-lg border border-emerald-500/20">3</div>
-                <h3 class="font-bold text-white text-sm mb-1.5">Tap Download</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Tap the "Download Video" button to save it directly to your storage.</p>
+            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-lg mb-5">3</div>
+                <h3 class="font-bold text-white text-base mb-2">Save to Device</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Choose Full HD MP4 or high-bitrate MP3 to save the file straight to your gallery.</p>
             </div>
         </div>
     </section>
 
-    <!-- 7. How It Works & Core Feature Bullets -->
-    <section id="features" class="max-w-4xl mx-auto px-4 py-10 w-full border-t border-slate-800/80">
-        <h2 class="text-2xl font-bold text-white mb-4 text-center">How Does the Downloader Work?</h2>
-        <p class="text-slate-400 text-xs sm:text-sm text-center max-w-2xl mx-auto mb-8 leading-relaxed">
-            Our tool allows you to download Reels, Videos, Photos, and Audio without watermarks by simply entering the URL of the content you want to download.
-        </p>
-
-        <div class="space-y-3 max-w-2xl mx-auto">
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start gap-3.5">
-                <i data-lucide="check" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                <p class="text-xs sm:text-sm text-slate-300"><strong class="text-white">Original Quality Without Watermark:</strong> Downloads clean video files without annoying platform logos or watermarks.</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start gap-3.5">
-                <i data-lucide="check" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                <p class="text-xs sm:text-sm text-slate-300"><strong class="text-white">Direct Gallery Downloads:</strong> Saves files straight into your gallery across all devices: iPhone, Android, iPad, PC, and Mac.</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start gap-3.5">
-                <i data-lucide="check" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                <p class="text-xs sm:text-sm text-slate-300"><strong class="text-white">100% Browser-Based:</strong> No need to install third-party applications, APKs, or browser extensions.</p>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-start gap-3.5">
-                <i data-lucide="check" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
-                <p class="text-xs sm:text-sm text-slate-300"><strong class="text-white">Always Free:</strong> We only place minimal ads to support maintaining our fast server bandwidth and continuous development.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 8. Content Formats & Why Use Sections -->
-    <section class="max-w-4xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-6 w-full">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
-            <h3 class="font-bold text-white text-base mb-2 flex items-center gap-2">
-                <i data-lucide="file-video" class="w-5 h-5 text-blue-400"></i> Supported Content Formats
-            </h3>
-            <p class="text-xs text-slate-400 leading-relaxed">
-                Platforms often restrict saving reels and media directly. Our tool bridges that gap by fetching direct stream links in high-quality <strong>MP4</strong>, <strong>JPG/PNG</strong>, or <strong>MP3</strong> audio files with one click.
+    <!-- 4. Supported Platforms Grid -->
+    <section id="supported" class="max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full">
+        <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-slate-800 text-center">
+            <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">One Engine, Universal Compatibility</h3>
+            <p class="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto mb-8 leading-relaxed">
+                FastSnap dynamically parses high-bitrate streams across all major media channels without compression.
             </p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
-            <h3 class="font-bold text-white text-base mb-2 flex items-center gap-2">
-                <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i> Commercial Use Disclaimer
-            </h3>
-            <p class="text-xs text-slate-400 leading-relaxed">
-                All downloaded media is intended for personal and offline viewing only. Downloaded content cannot be redistributed or used for commercial purposes without explicit permission from the original owner.
-            </p>
+            <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm font-semibold text-slate-300">
+                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> Instagram Reels</span>
+                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="film" class="w-4 h-4 text-cyan-400"></i> TikTok Videos</span>
+                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube Shorts</span>
+                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="twitter" class="w-4 h-4 text-sky-400"></i> Twitter / X Clips</span>
+            </div>
         </div>
     </section>
 
-    <!-- 9. Frequently Asked Questions (FAQ) -->
-    <section id="faq" class="max-w-3xl mx-auto px-4 py-12 w-full">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-2">Frequently Asked Questions</h2>
-        <p class="text-xs text-slate-400 text-center mb-8">Everything you need to know about our downloader tool</p>
+    <!-- 5. FAQ Accordion -->
+    <section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-16 w-full">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Frequently Asked Questions</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2">Everything you need to know about FastSnap.</p>
+        </div>
 
-        <div class="space-y-3">
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
+        <div class="space-y-3.5">
+            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Is FastVideoSave free to use?</span>
+                    <span>Is FastSnap completely free to use?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes, FastVideoSave is a 100% free online tool. You can download as many videos and reels as you want without any subscription or hidden costs.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes. FastSnap provides unlimited, unrestricted downloads without mandatory accounts, fees, or hidden subscriptions.</p>
             </details>
 
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
+            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Do I need to install any software or app?</span>
+                    <span>Does FastSnap remove TikTok watermarks?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No, you don't need to install anything. It is a web-based tool that works directly inside your browser on mobile, tablet, and desktop.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes. Our backend engine extracts the direct source stream to ensure TikTok videos are downloaded cleanly without bouncing logo watermarks.</p>
             </details>
 
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
+            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>What is the quality of the downloaded videos?</span>
+                    <span>Where are downloaded videos stored?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">We fetch the media in its original high quality. If the source video is available in 1080p, 2K, or 4K, our tool delivers the highest possible resolution stream.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Downloaded files are saved in your device's default "Downloads" directory or automatically synced to your Photos/Gallery app on mobile.</p>
             </details>
 
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
+            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Can I download content from private accounts?</span>
+                    <span>Do you store user data or videos on your servers?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">For privacy and security reasons, our tool only supports downloading content from publicly accessible accounts.</p>
-            </details>
-
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
-                <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Where are the downloaded files saved?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
-                </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">By default, files are saved in your device's "Downloads" folder. On iOS and Android devices, video downloads usually save directly to your Photos or Gallery app.</p>
-            </details>
-
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
-                <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Do I need to provide login details?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
-                </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No, you never need to provide your account credentials, passwords, or personal details. Everything processes anonymously via public URLs.</p>
-            </details>
-
-            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer group">
-                <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Do you store my downloaded videos on your servers?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
-                </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No, we do not host or store any user-downloaded media on our servers. All downloads are fetched and streamed directly from the official content delivery networks.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No. We respect user privacy. We do not store media files or track your personal download history on our servers.</p>
             </details>
         </div>
     </section>
 
-    <!-- 10. DMCA & Compliance Statement -->
-    <section id="dmca" class="max-w-4xl mx-auto px-4 py-8 border-t border-slate-800/80 text-xs text-slate-500 leading-relaxed">
-        <h3 class="font-bold text-slate-300 text-sm mb-2">DMCA Compliance</h3>
-        <p class="mb-2">
-            FastVideoSave complies with 17 U.S.C. § 512 and the Digital Millennium Copyright Act (DMCA). It is our policy to respond to any infringement notices and take appropriate actions immediately.
-        </p>
-        <p>
-            FastVideoSave is not connected to or affiliated with Instagram™, TikTok™, YouTube™, or any other social platforms. We do not host or store files on our servers; all content belongs strictly to its respective original creators.
-        </p>
-    </section>
-
-    <!-- 11. Footer -->
-    <footer class="border-t border-slate-800 bg-[#080c14] py-10 text-slate-400 text-xs mt-8">
-        <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div>
-                <div class="flex items-center gap-2 text-white font-bold text-base mb-3">
-                    <i data-lucide="zap" class="w-4 h-4 text-blue-500"></i> FastVideoSave
+    <!-- 6. Footer & Disclaimers -->
+    <footer class="border-t border-slate-800/80 bg-[#050811] py-12 text-slate-400 text-xs mt-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 text-white font-extrabold text-lg mb-3">
+                        <i data-lucide="zap" class="w-4 h-4 text-brand-500 fill-current"></i> FastSnap
+                    </div>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">High-performance media tool engineered for ultra-fast, clean video and audio downloads.</p>
                 </div>
-                <p class="text-[11px] text-slate-500 leading-relaxed">Super-fast web tool to download reels, videos, and audio in original quality.</p>
+                <div>
+                    <h4 class="font-bold text-white mb-3">Tools</h4>
+                    <ul class="space-y-2 text-[11px]">
+                        <li><a href="#downloader" class="hover:text-cyan-400 transition">Instagram Downloader</a></li>
+                        <li><a href="#downloader" class="hover:text-cyan-400 transition">TikTok Saver</a></li>
+                        <li><a href="#downloader" class="hover:text-cyan-400 transition">YouTube MP4 & MP3</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-3">Legal</h4>
+                    <ul class="space-y-2 text-[11px]">
+                        <li><a href="#faq" class="hover:text-cyan-400 transition">Privacy Policy</a></li>
+                        <li><a href="#faq" class="hover:text-cyan-400 transition">Terms of Service</a></li>
+                        <li><a href="#faq" class="hover:text-cyan-400 transition">DMCA Compliance</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-3">Support</h4>
+                    <ul class="space-y-2 text-[11px]">
+                        <li><a href="#faq" class="hover:text-cyan-400 transition">Help Center</a></li>
+                        <li><a href="#downloader" class="hover:text-cyan-400 transition">Report an Issue</a></li>
+                    </ul>
+                </div>
             </div>
-            <div>
-                <h4 class="font-semibold text-white mb-3">Tools</h4>
-                <ul class="space-y-1.5 text-[11px]">
-                    <li><a href="#" class="hover:text-blue-400 transition">Reels Downloader</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Video Downloader</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Audio Downloader (MP3)</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Photo & Thumbnail Saver</a></li>
-                </ul>
+
+            <div class="pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] text-slate-600">
+                <p>© 2026 FastSnap. All rights reserved. For personal and offline viewing only.</p>
+                <p>Not affiliated with Instagram, TikTok, YouTube, or Meta.</p>
             </div>
-            <div>
-                <h4 class="font-semibold text-white mb-3">Legal</h4>
-                <ul class="space-y-1.5 text-[11px]">
-                    <li><a href="#dmca" class="hover:text-blue-400 transition">DMCA Policy</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold text-white mb-3">Support</h4>
-                <ul class="space-y-1.5 text-[11px]">
-                    <li><a href="#faq" class="hover:text-blue-400 transition">Help & FAQ</a></li>
-                    <li><a href="#dmca" class="hover:text-blue-400 transition">Report an Issue</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-slate-900 text-center text-[11px] text-slate-600">
-            © 2026 FastVideoSave - All Rights Reserved.
         </div>
     </footer>
 
-    <!-- Client-Side Engine -->
+    <!-- Client-Side Logic -->
     <script>
         lucide.createIcons();
-        let selectedMode = 'video';
+        let selectedPlatform = 'all';
 
-        function setMode(mode) {
-            selectedMode = mode;
-            document.querySelectorAll('.format-tab').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+        function setPlatform(platform) {
+            selectedPlatform = platform;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('bg-slate-900/60', 'text-slate-400');
+            });
+            event.currentTarget.classList.add('tab-active');
+            event.currentTarget.classList.remove('bg-slate-900/60', 'text-slate-400');
         }
 
         async function pasteClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
-                document.getElementById('videoUrl').value = text;
+                document.getElementById('mediaUrl').value = text;
             } catch (err) {
-                alert('Please allow clipboard permissions or paste manually.');
+                alert('Please allow clipboard permissions or paste the URL manually.');
             }
         }
 
         async function fetchDownload() {
-            const urlInput = document.getElementById('videoUrl');
+            const urlInput = document.getElementById('mediaUrl');
             const url = urlInput.value.trim();
             const loader = document.getElementById('loader');
             const resultBox = document.getElementById('resultBox');
@@ -367,7 +372,7 @@
             resultBox.classList.add('hidden');
 
             try {
-                const res = await fetch(`/download?url=${encodeURIComponent(url)}&service=all`);
+                const res = await fetch(`/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}`);
                 const data = await res.json();
 
                 loader.classList.add('hidden');
@@ -378,9 +383,9 @@
                 }
 
                 document.getElementById('videoTitle').innerText = data.title || 'Extracted Media';
-                document.getElementById('thumbImg').src = data.thumbnail || 'https://via.placeholder.com/300x180?text=No+Preview';
+                document.getElementById('thumbImg').src = data.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60';
                 document.getElementById('mp4Btn').href = data.result;
-                document.getElementById('mp3Btn').href = `/download?url=${encodeURIComponent(url)}&service=all&mode=mp3_direct`;
+                document.getElementById('mp3Btn').href = `/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}&mode=mp3_direct`;
 
                 resultBox.classList.remove('hidden');
                 lucide.createIcons();
