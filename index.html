@@ -3,161 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocialLoad - Download TikTok, Instagram & YouTube</title>
-    <meta name="description" content="Free online video and audio downloader for YouTube, Instagram, TikTok, and Twitter. Fast, secure, and no watermark.">
-<meta name="keywords" content="video downloader, tiktok downloader, youtube mp3, instagram reel download">
-<meta name="robots" content="index, follow">
-    <meta name="google-site-verification" content="3zYCEAAgBZBbFL933_fZFmDL1sf1Z7jAInoFd1tmvaM" />
+    <title>SnapSave - Fast & Free Online Video Downloader</title>
+    
+    <!-- Tab Icon (Favicon) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Download high-definition videos, reels, and audio from YouTube, TikTok, Instagram, and Twitter in MP4 or MP3 format. Fast, free, and unlimited.">
+    <meta name="keywords" content="video downloader, tiktok video download without watermark, instagram reel downloader, youtube mp4 download, mp3 converter">
+    <meta name="robots" content="index, follow">
+
+    <!-- Tailwind CSS & Lucide Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; scroll-behavior: smooth; }
-        .service-btn.active { background-color: #2563eb; color: white; border-color: #3b82f6; }
-        .feature-card:hover { transform: translateY(-5px); transition: 0.3s; }
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #e2e8f0; }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .ad-box { border: 1px dashed #334155; background: rgba(30, 41, 59, 0.3); }
+        .tab-btn.active { background: #2563eb; color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
     </style>
 </head>
-<body class="text-white">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <nav class="p-6 max-w-6xl mx-auto flex justify-between items-center border-b border-gray-800">
-        <div class="text-2xl font-black text-blue-500 tracking-tighter">SOCIAL<span class="text-white">LOAD</span></div>
-        <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-400">
-            <a href="#how-to" class="hover:text-white">How it works</a>
-            <a href="#features" class="hover:text-white">Features</a>
-            <a href="#faq" class="hover:text-white">FAQ</a>
-        </div>
-    </nav>
-
-    <header class="flex flex-col items-center justify-center pt-16 pb-10 px-4">
-        <h1 id="mainTitle" class="text-4xl md:text-6xl font-black text-center mb-4 tracking-tight">TikTok Downloader</h1>
-        <p id="mainDesc" class="text-gray-400 text-center mb-10 max-w-2xl text-lg">Download TikTok videos without watermark online. High-speed, HD quality, and totally free.</p>
-
-        <!-- Tool Switcher with Thumbnail Option -->
-        <div class="flex flex-wrap justify-center gap-2 p-1.5 bg-[#1e293b] rounded-full mb-8 border border-gray-700 shadow-xl">
-            <button onclick="setService('tiktok', this)" class="service-btn active px-6 py-2.5 rounded-full text-sm font-bold transition">TikTok</button>
-            <button onclick="setService('instagram', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">Instagram</button>
-            <button onclick="setService('youtube', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">YouTube</button>
-            <button onclick="setService('thumbnail', this)" class="service-btn px-6 py-2.5 rounded-full text-sm font-bold text-gray-400 hover:text-white transition">Thumbnail HD</button>
-        </div>
-
-        <div class="w-full max-w-3xl bg-[#1e293b] p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-3 border border-gray-700">
-            <input type="text" id="videoUrl" placeholder="Paste link here..." 
-                   class="flex-1 bg-transparent p-4 outline-none text-lg text-white placeholder-gray-500">
-            <button onclick="fetchVideo()" id="mainBtn" 
-                    class="bg-blue-600 hover:bg-blue-500 text-white font-black py-4 px-12 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/20">
-                DOWNLOAD
-            </button>
-        </div>
-
-        <div id="loader" class="mt-8 hidden flex flex-col items-center">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-2"></div>
-            <p class="text-sm text-gray-500">Processing media...</p>
-        </div>
-
-        <!-- Result Card with all 3 Download Buttons -->
-        <div id="resultCard" class="mt-12 w-full max-w-md bg-[#1e293b] rounded-3xl overflow-hidden hidden shadow-2xl border border-gray-700">
-            <div class="relative h-56">
-                <img id="vidThumb" src="" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#1e293b] via-transparent to-transparent"></div>
-                <div id="vidTitle" class="absolute bottom-4 left-4 font-bold text-white text-base pr-4 line-clamp-2">Media Title</div>
+    <!-- 1. Navigation Header -->
+    <header class="border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/30">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tight text-white">SNAP<span class="text-blue-500">SAVE</span></span>
             </div>
-            <div class="p-6 space-y-3">
-                <a id="mp4Btn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-green-600 hover:bg-green-500 text-white font-black py-3.5 rounded-xl transition-all">
-                    <span>🎬</span> <span>DOWNLOAD MP4 (HD)</span>
-                </a>
-                <a id="mp3Btn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-600 text-white font-black py-3.5 rounded-xl border border-gray-600 transition-all">
-                    <span>🎵</span> <span>DOWNLOAD MP3 (AUDIO)</span>
-                </a>
-                <a id="thumbBtn" href="#" target="_blank" class="flex items-center justify-center space-x-3 bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-xl transition-all">
-                    <span>🖼️</span> <span>DOWNLOAD THUMBNAIL (HD)</span>
-                </a>
-                <button onclick="resetSearch()" class="w-full text-gray-500 text-xs hover:text-white mt-2 font-medium">Clear and Download Another</button>
-            </div>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+                <a href="#features" class="hover:text-white transition">Features</a>
+                <a href="#how-to" class="hover:text-white transition">How to Download</a>
+                <a href="#faq" class="hover:text-white transition">FAQ</a>
+            </nav>
         </div>
     </header>
 
-    <section id="features" class="max-w-6xl mx-auto py-20 px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
-                <div class="text-4xl mb-4">♾️</div>
-                <h3 class="text-xl font-bold mb-2">Unlimited Saves</h3>
-                <p class="text-gray-400 text-sm">Save as many videos and images as you want without restrictions.</p>
+    <!-- 2. TOP LEADERBOARD AD SPACE (728x90 / Responsive) -->
+    <div class="max-w-4xl mx-auto px-4 pt-6 w-full">
+        <div class="ad-box h-24 rounded-lg flex flex-col items-center justify-center text-xs text-slate-500 font-mono">
+            <span>[ ADVERTISEMENT BANNER - TOP ]</span>
+            <span class="text-[10px] text-slate-600 mt-1">Paste your Google AdSense / Adsterra code here</span>
+        </div>
+    </div>
+
+    <!-- 3. Main Hero / Input Downloader Tool -->
+    <main class="max-w-4xl mx-auto px-4 py-10 w-full text-center">
+        <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
+            Online Video <span class="gradient-text">Downloader</span>
+        </h1>
+        <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-8">
+            Download videos, reels, clips, and audio from all major platforms in full HD and MP3 with no watermark.
+        </p>
+
+        <!-- Service Platform Selector Tabs -->
+        <div class="flex flex-wrap justify-center gap-2 mb-6" id="serviceTabs">
+            <button onclick="setPlatform('all')" class="tab-btn active px-4 py-2 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="layers" class="w-4 h-4"></i> Auto Detect
+            </button>
+            <button onclick="setPlatform('youtube')" class="tab-btn px-4 py-2 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube
+            </button>
+            <button onclick="setPlatform('tiktok')" class="tab-btn px-4 py-2 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="video" class="w-4 h-4 text-pink-500"></i> TikTok
+            </button>
+            <button onclick="setPlatform('instagram')" class="tab-btn px-4 py-2 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="instagram" class="w-4 h-4 text-purple-500"></i> Instagram
+            </button>
+            <button onclick="setPlatform('twitter')" class="tab-btn px-4 py-2 rounded-full border border-slate-700 bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="twitter" class="w-4 h-4 text-sky-400"></i> Twitter / X
+            </button>
+        </div>
+
+        <!-- Download Input Box -->
+        <div class="relative flex flex-col sm:flex-row gap-2 bg-slate-900/90 border border-slate-700/80 p-2 rounded-2xl shadow-2xl">
+            <div class="flex items-center pl-3 flex-1 gap-2">
+                <i data-lucide="link" class="w-5 h-5 text-slate-500"></i>
+                <input type="text" id="videoUrl" placeholder="Paste link here (e.g. YouTube, TikTok, Instagram, Twitter)..." class="w-full bg-transparent text-white placeholder-slate-500 outline-none text-sm py-2">
             </div>
-            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
-                <div class="text-4xl mb-4">🚫</div>
-                <h3 class="text-xl font-bold mb-2">No Watermark</h3>
-                <p class="text-gray-400 text-sm">Download clean versions of videos with zero logos or overlays.</p>
+            <button onclick="fetchDownload()" id="downloadBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30">
+                <i data-lucide="download" class="w-5 h-5"></i> Download
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loader" class="hidden my-8">
+            <div class="inline-flex items-center gap-3 bg-slate-800/80 px-6 py-3 rounded-xl border border-slate-700 text-sm text-slate-300">
+                <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-blue-500"></i> Fetching video and audio streams...
             </div>
-            <div class="bg-[#1e293b] p-8 rounded-3xl border border-gray-800 feature-card text-center">
-                <div class="text-4xl mb-4">⚡</div>
-                <h3 class="text-xl font-bold mb-2">HD Thumbnails & MP3</h3>
-                <p class="text-gray-400 text-sm">Grab high-resolution cover artwork and extracted audio tracks instantly.</p>
+        </div>
+
+        <!-- Result Box -->
+        <div id="resultBox" class="hidden mt-8 text-left bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-2xl mx-auto">
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <img id="thumbImg" src="" alt="Thumbnail" class="w-full sm:w-44 h-28 object-cover rounded-xl border border-slate-800 bg-slate-950">
+                <div class="flex-1">
+                    <h3 id="videoTitle" class="font-bold text-white text-base line-clamp-2 mb-3">Video Title</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a id="mp4Btn" href="#" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg flex items-center gap-2 transition shadow-md">
+                            <i data-lucide="video" class="w-4 h-4"></i> Download MP4
+                        </a>
+                        <a id="mp3Btn" href="#" target="_blank" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs rounded-lg flex items-center gap-2 transition shadow-md">
+                            <i data-lucide="music" class="w-4 h-4"></i> Download MP3
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. NATIVE IN-FEED AD SPACE -->
+    <div class="max-w-4xl mx-auto px-4 py-4 w-full">
+        <div class="ad-box h-28 rounded-xl flex flex-col items-center justify-center text-xs text-slate-500 font-mono">
+            <span>[ NATIVE IN-CONTENT AD SLOT ]</span>
+            <span class="text-[10px] text-slate-600 mt-1">High conversion ad space directly under conversion action</span>
+        </div>
+    </div>
+
+    <!-- 5. How To Download Section -->
+    <section id="how-to" class="max-w-5xl mx-auto px-4 py-12 w-full">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-10">
+            How to Download Videos in 3 Easy Steps
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl text-center">
+                <div class="w-12 h-12 bg-blue-600/10 text-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-xl">1</div>
+                <h3 class="font-bold text-white mb-2">Copy Video Link</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Open your favorite social platform, click the share button, and copy the link to clipboard.</p>
+            </div>
+            <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl text-center">
+                <div class="w-12 h-12 bg-purple-600/10 text-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-xl">2</div>
+                <h3 class="font-bold text-white mb-2">Paste URL Above</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Paste your copied link into the search input box and hit the blue Download button.</p>
+            </div>
+            <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl text-center">
+                <div class="w-12 h-12 bg-emerald-600/10 text-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4 font-black text-xl">3</div>
+                <h3 class="font-bold text-white mb-2">Save Media</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Choose MP4 for full HD video or MP3 for pure high-bitrate audio directly to your device.</p>
             </div>
         </div>
     </section>
 
-    <footer class="p-10 text-center text-gray-600 border-t border-gray-900 text-sm">
-        <p>© 2026 SocialLoad Team - Expert Video Downloader</p>
+    <!-- 6. Features Grid Section -->
+    <section id="features" class="max-w-5xl mx-auto px-4 py-10 w-full border-t border-slate-800/80">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-10">
+            Why Choose Our Downloader?
+        </h2>
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl text-center">
+                <i data-lucide="shield-check" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                <h4 class="font-semibold text-sm text-white mb-1">100% Safe & Secure</h4>
+                <p class="text-slate-400 text-xs">No account creation, no installations, completely secure.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl text-center">
+                <i data-lucide="sparkles" class="w-8 h-8 text-pink-400 mx-auto mb-3"></i>
+                <h4 class="font-semibold text-sm text-white mb-1">No Watermarks</h4>
+                <p class="text-slate-400 text-xs">Save clean TikTok and Instagram videos without logos.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl text-center">
+                <i data-lucide="zap" class="w-8 h-8 text-yellow-400 mx-auto mb-3"></i>
+                <h4 class="font-semibold text-sm text-white mb-1">Ultra Fast Server</h4>
+                <p class="text-slate-400 text-xs">Extracts and fetches high-speed direct download streams.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl text-center">
+                <i data-lucide="infinity" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
+                <h4 class="font-semibold text-sm text-white mb-1">Unlimited Free</h4>
+                <p class="text-slate-400 text-xs">Download as many media clips as you want without caps.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Frequently Asked Questions (FAQ) -->
+    <section id="faq" class="max-w-3xl mx-auto px-4 py-12 w-full">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-4 text-left">
+            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer">
+                <summary class="font-semibold text-sm text-white flex items-center justify-between">
+                    Do I need to install any browser extensions or apps?
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                </summary>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No, this is a 100% web-based platform. You can use it across any modern browser on Android, iPhone, Windows, or Mac.</p>
+            </details>
+            <details class="bg-slate-900 border border-slate-800 p-4 rounded-xl cursor-pointer">
+                <summary class="font-semibold text-sm text-white flex items-center justify-between">
+                    Where are downloaded videos saved?
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                </summary>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Videos are saved automatically to your device's default "Downloads" folder or camera roll gallery.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- 8. Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-center text-slate-500 text-xs mt-10">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-blue-500"></i>
+                <span class="font-bold text-white">SnapSave</span> - Fast Media Utility
+            </div>
+            <p>© 2026 SnapSave. All rights reserved.</p>
+        </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
-        let currentService = 'tiktok';
+        lucide.createIcons();
+        let currentPlatform = 'all';
 
-        function setService(service, btn) {
-            currentService = service;
-            const titles = {
-                'tiktok': ['TikTok Downloader', 'Download TikTok videos without watermark online.'],
-                'instagram': ['Instagram Downloader', 'Save Reels, IGTV, and Instagram videos in MP4 format.'],
-                'youtube': ['YouTube Downloader', 'Download YouTube videos and Shorts in high quality.'],
-                'thumbnail': ['Thumbnail Downloader', 'Download full HD cover images from YouTube, TikTok, and Instagram.']
-            };
-            document.getElementById('mainTitle').innerText = titles[service][0];
-            document.getElementById('mainDesc').innerText = titles[service][1];
-            
-            document.querySelectorAll('.service-btn').forEach(b => {
-                b.classList.remove('active', 'text-white');
-                b.classList.add('text-gray-400');
-            });
-            btn.classList.add('active', 'text-white');
-            resetSearch();
+        function setPlatform(platform) {
+            currentPlatform = platform;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
-        async function fetchVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            if(!url) return alert("Please paste a link first!");
+        async function fetchDownload() {
+            const urlInput = document.getElementById('videoUrl');
+            const url = urlInput.value.trim();
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('resultBox');
 
-            document.getElementById('mainBtn').disabled = true;
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('resultCard').classList.add('hidden');
+            if (!url) {
+                alert('Please paste a valid video URL first.');
+                return;
+            }
+
+            loader.classList.remove('hidden');
+            resultBox.classList.add('hidden');
 
             try {
-                const response = await fetch(`http://127.0.0.1:5000/download?url=${encodeURIComponent(url)}&service=${currentService}`);
-                const data = await response.json();
+                const res = await fetch(`/download?url=${encodeURIComponent(url)}&service=${currentPlatform}`);
+                const data = await res.json();
 
-                if(data.result) {
-                    const thumbUrl = data.thumbnail || 'https://via.placeholder.com/400x225?text=No+Thumbnail';
-                    document.getElementById('vidThumb').src = thumbUrl;
-                    document.getElementById('vidTitle').innerText = data.title;
-                    document.getElementById('mp4Btn').href = data.result;
-                    document.getElementById('mp3Btn').href = `http://127.0.0.1:5000/download?url=${encodeURIComponent(url)}&service=${currentService}&mode=mp3_direct`;
-                    
-                    // Direct link for the thumbnail button
-                    document.getElementById('thumbBtn').href = thumbUrl;
+                loader.classList.add('hidden');
 
-                    document.getElementById('resultCard').classList.remove('hidden');
-                } else { 
-                    alert("Failed to fetch link. Make sure the link is public."); 
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
                 }
-            } catch (e) { 
-                alert("Server error. Ensure python app.py is running in the terminal."); 
-            } finally {
-                document.getElementById('mainBtn').disabled = false;
-                document.getElementById('loader').classList.add('hidden');
-            }
-        }
 
-        function resetSearch() {
-            document.getElementById('resultCard').classList.add('hidden');
-            document.getElementById('videoUrl').value = '';
+                document.getElementById('videoTitle').innerText = data.title || 'Extracted Media';
+                document.getElementById('thumbImg').src = data.thumbnail || 'https://via.placeholder.com/300x180?text=No+Preview';
+                document.getElementById('mp4Btn').href = data.result;
+                document.getElementById('mp3Btn').href = `/download?url=${encodeURIComponent(url)}&service=${currentPlatform}&mode=mp3_direct`;
+
+                resultBox.classList.remove('hidden');
+                lucide.createIcons();
+            } catch (err) {
+                loader.classList.add('hidden');
+                alert('Failed to connect to backend server. Please try again.');
+            }
         }
     </script>
 </body>
