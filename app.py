@@ -1,12 +1,12 @@
 import io
-from flask import Flask, request, jsonify, redirect, render_template_string
+import requests
+from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
 import yt_dlp
 
 app = Flask(__name__)
 CORS(app)
 
-# Display your website interface
 @app.route('/')
 def home():
     try:
@@ -15,40 +15,53 @@ def home():
     except Exception as e:
         return f"Error loading index.html: {str(e)}", 500
 
-# Download engine
 @app.route('/download', methods=['GET'])
-def download_tool():
+def download_media():
     url = request.args.get('url')
-    service = request.args.get('service')
-    mode = request.args.get('mode') 
+    service = request.args.get('service', 'all')
+    mode = request.args.get('mode', 'video') 
+    direct = request.args.get('direct', 'false')
     
     if not url:
-        return jsonify({"error": "No URL provided"}), 400
+        return jsonify({"error": "No media URL provided"}), 400
     
     try:
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
-            'format': 'bestaudio/best' if mode == 'mp3_direct' else 'best[ext=mp4]/best'
+            'format': 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            download_url = info.get('url')
+            stream_url = info.get('url')
+            title = info.get('title', 'FastSnap_Media').replace('"', '').replace('/', '_')
             
-            if service == 'tiktok' and mode != 'mp3_direct':
+            # TikTok Clean Link Extraction
+            if service == 'tiktok' and mode != 'audio':
                 formats = info.get('formats', [])
                 for f in formats:
                     if 'watermark' not in f.get('format_note', '').lower():
-                        download_url = f.get('url')
+                        stream_url = f.get('url')
                         break
 
-            if mode == 'mp3_direct':
-                return redirect(download_url)
+            # Direct Force Download Proxy
+            if direct == 'true':
+                ext = 'mp3' if mode == 'audio' else 'mp4'
+                headers = {'User-Agent': 'Mozilla/5.0'}
+                req = requests.get(stream_url, headers=headers, stream=True)
+                
+                return Response(
+                    req.iter_content(chunk_size=8192),
+                    content_type=req.headers.get('content-type', 'application/octet-stream'),
+                    headers={
+                        "Content-Disposition": f'attachment; filename="{title}.{ext}"'
+                    }
+                )
 
             return jsonify({
-                "result": download_url,
-                "title": info.get('title', 'Downloaded Media'),
+                "download_url": f"/download?url={requests.utils.quote(url)}&service={service}&mode={mode}&direct=true",
+                "title": title,
                 "thumbnail": info.get('thumbnail')
             })
                 
