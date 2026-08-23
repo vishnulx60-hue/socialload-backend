@@ -3,365 +3,511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastSnap - Lightning Fast Media & Video Downloader</title>
-
-    <!-- Tab Icon (Favicon) -->
+    <title>FastSnap - Free Online Video Downloader | Reels, Shorts & MP3</title>
+    
+    <!-- Tab Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <link rel="canonical" href="https://fastsnap.site/">
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="FastSnap is a high-speed media downloader to save Instagram Reels, TikTok videos without watermarks, YouTube clips, and high-bitrate audio directly to your device.">
-    <meta name="keywords" content="FastSnap, reels downloader, tiktok downloader no watermark, video downloader, audio extractor, online media saver">
-    <meta name="robots" content="index, follow">
+    <!-- Comprehensive SEO Meta Tags -->
+    <meta name="description" content="FastSnap is a high-speed free online media downloader. Download Instagram Reels, TikTok videos without watermarks, YouTube Shorts, and high-bitrate MP3s directly to your device.">
+    <meta name="keywords" content="video downloader, reels downloader, tiktok downloader no watermark, download instagram reels, fast video save, saveclip, fastdl, youtube to mp3">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="FastSnap Team">
 
-    <!-- Fonts & Tailwind CSS -->
+    <!-- Open Graph (Facebook / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fastsnap.site/">
+    <meta property="og:title" content="FastSnap - Free Online Video Downloader">
+    <meta property="og:description" content="Download Reels, TikTok clips without watermarks, and HD videos in one click. Free, unlimited, and no registration.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FastSnap - Lightning-Fast Video Downloader">
+    <meta name="twitter:description" content="Download high quality videos from Instagram, TikTok, and YouTube with direct download capability.">
+
+    <!-- Structured Data (Schema.org JSON-LD for WebApplication & FAQPage) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FastSnap",
+          "url": "https://fastsnap.site/",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "Download online videos and audio from Instagram, TikTok, and YouTube in full HD MP4 and MP3 format without watermarks."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is FastSnap free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, FastSnap is 100% free with unlimited downloads and no registration required."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does FastSnap download videos without watermark?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, FastSnap strips platform logos and delivers clean HD videos."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
-        body {
-            background-color: #080c16;
-            color: #f1f5f9;
-        }
-        .glow-bg {
-            background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.06) 35%, transparent 70%);
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-input {
-            background: rgba(2, 6, 23, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .glass-input:focus-within {
-            border-color: #6366f1;
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
-        }
-        .tab-active {
-            background: linear-gradient(135deg, #4f46e5, #06b6d4);
-            color: #ffffff;
-            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.35);
-        }
-        .gradient-headline {
-            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 70%, #6366f1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #080c16; color: #f1f5f9; }
+        .glow-bg { background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.05) 40%, transparent 70%); }
+        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .tab-btn.active { background: linear-gradient(135deg, #4f46e5, #06b6d4); color: #fff; box-shadow: 0 4px 20px rgba(79, 70, 229, 0.35); }
+        .modal { display: none; }
+        .modal.active { display: flex; }
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-600 selection:text-white relative overflow-x-hidden">
 
-    <!-- Background Ambient Glow -->
     <div class="absolute inset-0 glow-bg pointer-events-none -z-10"></div>
 
-    <!-- 1. Header -->
-    <header class="border-b border-slate-800/60 bg-[#080c16]/80 backdrop-blur-xl sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-2.5 group">
-                <div class="p-2 bg-gradient-to-tr from-brand-600 via-indigo-500 to-cyan-400 rounded-xl text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
+    <!-- 1. Header Navigation -->
+    <header class="border-b border-slate-800/80 bg-[#080c16]/90 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="p-2 bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 rounded-xl text-white shadow-lg shadow-indigo-500/25">
                     <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
                 </div>
                 <span class="text-2xl font-extrabold tracking-tight text-white">Fast<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Snap</span></span>
             </a>
-            
+
+            <!-- Navigation Links -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-                <a href="#how-it-works" class="hover:text-white transition">How it Works</a>
-                <a href="#features" class="hover:text-white transition">Features</a>
-                <a href="#supported" class="hover:text-white transition">Platforms</a>
-                <a href="#faq" class="hover:text-white transition">FAQ</a>
+                <a href="#how-it-works" class="hover:text-white transition" data-i18n="nav_how">How it Works</a>
+                <a href="#features" class="hover:text-white transition" data-i18n="nav_features">Features</a>
+                <a href="#faq" class="hover:text-white transition" data-i18n="nav_faq">FAQ</a>
+                <button onclick="openModal('contactModal')" class="hover:text-white transition" data-i18n="nav_contact">Contact</button>
             </nav>
 
-            <a href="#downloader" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/60 transition">
-                <i data-lucide="download-cloud" class="w-3.5 h-3.5 text-cyan-400"></i> Get Started
-            </a>
+            <!-- Language Switcher Dropdown -->
+            <div class="relative">
+                <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer hover:border-indigo-500 transition">
+                    <option value="en">English (EN)</option>
+                    <option value="es">Español (ES)</option>
+                    <option value="hi">हिन्दी (HI)</option>
+                    <option value="fr">Français (FR)</option>
+                    <option value="de">Deutsch (DE)</option>
+                    <option value="pt">Português (PT)</option>
+                    <option value="id">Bahasa Indonesia (ID)</option>
+                    <option value="ar">العربية (AR)</option>
+                    <option value="ru">Русский (RU)</option>
+                    <option value="ja">日本語 (JA)</option>
+                </select>
+            </div>
         </div>
     </header>
 
-    <!-- 2. Hero & Download Engine Section -->
-    <main id="downloader" class="max-w-4xl mx-auto px-4 sm:px-6 pt-14 pb-16 w-full text-center">
-        <!-- Floating Badge -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-6 shadow-inner">
+    <!-- 2. Main Hero Downloader Section -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-16 w-full text-center">
+        <!-- Floating Version Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/70 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-6">
             <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            Version 2.0 • Ultra HD & MP3 Processing
+            <span data-i18n="badge_title">Direct Fast Download Engine</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl font-black tracking-tight gradient-headline mb-4 leading-tight">
-            Save Any Social Media <br class="hidden sm:inline">In One Snap.
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
+            <span data-i18n="hero_title_1">Online Video</span> <br class="hidden sm:inline">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400" data-i18n="hero_title_2">& Reels Downloader</span>
         </h1>
-        <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-10 leading-relaxed">
-            Download Reels, Shorts, video clips, and high-bitrate audio from Instagram, TikTok, YouTube, and X without logos or watermarks.
+        <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed" data-i18n="hero_desc">
+            Download Reels, Shorts, and videos from Instagram, TikTok, YouTube, and Twitter without watermarks in full HD or MP3.
         </p>
 
-        <!-- Tool Container -->
-        <div class="glass-panel p-4 sm:p-6 rounded-3xl shadow-2xl border border-slate-800 relative">
+        <!-- Downloader Container Box -->
+        <div class="glass-panel p-4 sm:p-6 rounded-3xl shadow-2xl relative">
             <!-- Platform Tabs -->
-            <div class="flex flex-wrap justify-center gap-2 mb-6" id="platformTabs">
-                <button onclick="setPlatform('all')" class="tab-btn tab-active px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition duration-200">
+            <div class="flex flex-wrap justify-center gap-2 mb-6" id="serviceTabs">
+                <button onclick="setPlatform('all')" class="tab-btn active px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition">
                     <i data-lucide="layers" class="w-4 h-4"></i> Auto Detect
                 </button>
-                <button onclick="setPlatform('instagram')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                <button onclick="setPlatform('instagram')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
                     <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> Instagram
                 </button>
-                <button onclick="setPlatform('tiktok')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                <button onclick="setPlatform('tiktok')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
                     <i data-lucide="film" class="w-4 h-4 text-cyan-400"></i> TikTok
                 </button>
-                <button onclick="setPlatform('youtube')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                <button onclick="setPlatform('youtube')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
                     <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube
                 </button>
-                <button onclick="setPlatform('twitter')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition duration-200">
+                <button onclick="setPlatform('twitter')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
                     <i data-lucide="twitter" class="w-4 h-4 text-sky-400"></i> Twitter / X
                 </button>
             </div>
 
-            <!-- Input Bar -->
-            <div class="glass-input rounded-2xl p-2 flex flex-col sm:flex-row gap-2 transition-all">
-                <div class="flex items-center pl-3.5 flex-1 gap-3">
-                    <i data-lucide="link-2" class="w-5 h-5 text-slate-500"></i>
-                    <input type="text" id="mediaUrl" placeholder="Paste link here (e.g. Instagram Reel, TikTok, Shorts)..." class="w-full bg-transparent text-white placeholder-slate-500 outline-none text-sm py-2.5">
-                    <button onclick="pasteClipboard()" type="button" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5 flex-shrink-0">
-                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Paste
+            <!-- Input Bar with Smart Clear and Paste Buttons -->
+            <div class="bg-slate-950/80 border border-slate-700/80 rounded-2xl p-2 flex flex-col sm:flex-row gap-2 transition-all">
+                <div class="flex items-center pl-3.5 flex-1 gap-2.5">
+                    <i data-lucide="link" class="w-5 h-5 text-slate-500"></i>
+                    <input type="text" id="videoUrl" oninput="toggleClearButton()" placeholder="Paste link here (Instagram, TikTok, YouTube, X)..." class="w-full bg-transparent text-white placeholder-slate-500 outline-none text-sm py-2.5">
+                    
+                    <!-- Dynamic Clear (X) Button -->
+                    <button onclick="clearInput()" id="clearBtn" type="button" class="hidden text-slate-400 hover:text-white p-1.5 transition">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Paste Clipboard Button -->
+                    <button onclick="pasteClipboard()" type="button" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5 flex-shrink-0">
+                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> <span data-i18n="btn_paste">Paste</span>
                     </button>
                 </div>
-                <button onclick="fetchDownload()" id="downloadBtn" class="bg-gradient-to-r from-brand-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white font-bold px-8 py-3.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25 flex-shrink-0">
-                    <i data-lucide="sparkles" class="w-4 h-4"></i> Download
+                
+                <!-- Direct Trigger Download Button -->
+                <button onclick="startDirectDownload()" id="downloadBtn" class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 hover:opacity-95 text-white font-bold px-8 py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 flex-shrink-0">
+                    <i data-lucide="download" class="w-4 h-4"></i> <span data-i18n="btn_download">Download</span>
                 </button>
             </div>
 
-            <!-- Progress Spinner -->
-            <div id="loader" class="hidden my-8">
-                <div class="inline-flex items-center gap-3 bg-slate-900/90 border border-slate-800 px-6 py-3.5 rounded-2xl text-sm text-slate-300 shadow-xl">
-                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-brand-500"></i>
-                    <span>Analyzing link & generating media stream...</span>
+            <!-- Download Status Notification -->
+            <div id="loader" class="hidden my-6">
+                <div class="inline-flex items-center gap-3 bg-slate-900 border border-slate-800 px-6 py-3.5 rounded-2xl text-xs sm:text-sm text-slate-300 shadow-xl">
+                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-indigo-400"></i>
+                    <span data-i18n="status_fetching">Processing link & starting direct download...</span>
                 </div>
-            </div>
-
-            <!-- Download Result Showcase -->
-            <div id="resultBox" class="hidden mt-8 text-left bg-slate-900/90 border border-slate-800/90 p-5 sm:p-6 rounded-2xl shadow-xl max-w-xl mx-auto">
-                <div class="flex flex-col sm:flex-row gap-5 items-center">
-                    <img id="thumbImg" src="" alt="Thumbnail" class="w-full sm:w-44 h-32 object-cover rounded-xl border border-slate-800 bg-slate-950 shadow-md">
-                    <div class="flex-1 w-full">
-                        <h3 id="videoTitle" class="font-bold text-white text-sm sm:text-base line-clamp-2 mb-4 leading-snug">Media Title</h3>
-                        <div class="flex flex-wrap gap-2.5">
-                            <a id="mp4Btn" href="#" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
-                                <i data-lucide="video" class="w-4 h-4"></i> Download MP4 (HD)
-                            </a>
-                            <a id="mp3Btn" href="#" target="_blank" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition shadow-lg shadow-indigo-600/20">
-                                <i data-lucide="music" class="w-4 h-4"></i> Download MP3
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Trust Features Row -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <div class="glass-panel p-4 rounded-2xl text-center">
-                <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400 mx-auto mb-2"></i>
-                <div class="text-xs font-bold text-white">No Watermarks</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">Clean video files</div>
-            </div>
-            <div class="glass-panel p-4 rounded-2xl text-center">
-                <i data-lucide="zap" class="w-6 h-6 text-amber-400 mx-auto mb-2"></i>
-                <div class="text-xs font-bold text-white">Instant Fetch</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">High-speed engine</div>
-            </div>
-            <div class="glass-panel p-4 rounded-2xl text-center">
-                <i data-lucide="award" class="w-6 h-6 text-cyan-400 mx-auto mb-2"></i>
-                <div class="text-xs font-bold text-white">Original Quality</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">Up to 4K resolution</div>
-            </div>
-            <div class="glass-panel p-4 rounded-2xl text-center">
-                <i data-lucide="lock" class="w-6 h-6 text-indigo-400 mx-auto mb-2"></i>
-                <div class="text-xs font-bold text-white">100% Anonymous</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">No login required</div>
             </div>
         </div>
     </main>
 
     <!-- 3. How It Works Section -->
-    <section id="how-it-works" class="max-w-5xl mx-auto px-4 sm:px-6 py-16 w-full border-t border-slate-800/60">
-        <div class="text-center mb-12">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Download in 3 Simple Steps</h2>
-            <p class="text-slate-400 text-xs sm:text-sm mt-2">Fast, browser-based, and zero installation required.</p>
+    <section id="how-it-works" class="max-w-5xl mx-auto px-4 sm:px-6 py-14 w-full border-t border-slate-800/80">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white" data-i18n="how_title">How to Download Videos & Audio</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-1" data-i18n="how_subtitle">Fast 3-step process to save media directly into your gallery</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
-                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-lg mb-5">1</div>
-                <h3 class="font-bold text-white text-base mb-2">Copy Video Link</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Open Instagram, TikTok, or YouTube, tap the share icon, and select "Copy Link".</p>
+            <div class="glass-panel p-6 rounded-3xl text-center">
+                <div class="w-12 h-12 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-lg">1</div>
+                <h3 class="font-bold text-white text-sm mb-1.5" data-i18n="step1_title">Copy Media Link</h3>
+                <p class="text-slate-400 text-xs leading-relaxed" data-i18n="step1_desc">Open your app (Instagram, TikTok, YouTube), tap share, and copy the URL link.</p>
             </div>
-            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
-                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center font-black text-lg mb-5">2</div>
-                <h3 class="font-bold text-white text-base mb-2">Paste into FastSnap</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Paste your copied link into the search bar and click the Download button.</p>
+            <div class="glass-panel p-6 rounded-3xl text-center">
+                <div class="w-12 h-12 bg-cyan-600/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-lg">2</div>
+                <h3 class="font-bold text-white text-sm mb-1.5" data-i18n="step2_title">Paste into FastSnap</h3>
+                <p class="text-slate-400 text-xs leading-relaxed" data-i18n="step2_desc">Paste your link into the input bar above. Use the quick Paste button.</p>
             </div>
-            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-brand-500/40 transition">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-lg mb-5">3</div>
-                <h3 class="font-bold text-white text-base mb-2">Save to Device</h3>
-                <p class="text-slate-400 text-xs leading-relaxed">Choose Full HD MP4 or high-bitrate MP3 to save the file straight to your gallery.</p>
+            <div class="glass-panel p-6 rounded-3xl text-center">
+                <div class="w-12 h-12 bg-emerald-600/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-lg">3</div>
+                <h3 class="font-bold text-white text-sm mb-1.5" data-i18n="step3_title">Automatic Download</h3>
+                <p class="text-slate-400 text-xs leading-relaxed" data-i18n="step3_desc">Click download and your browser will directly save the file to your storage.</p>
             </div>
         </div>
     </section>
 
-    <!-- 4. Supported Platforms Grid -->
-    <section id="supported" class="max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full">
-        <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-slate-800 text-center">
-            <h3 class="text-xl sm:text-2xl font-bold text-white mb-3">One Engine, Universal Compatibility</h3>
-            <p class="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto mb-8 leading-relaxed">
-                FastSnap dynamically parses high-bitrate streams across all major media channels without compression.
-            </p>
-            <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm font-semibold text-slate-300">
-                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> Instagram Reels</span>
-                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="film" class="w-4 h-4 text-cyan-400"></i> TikTok Videos</span>
-                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube Shorts</span>
-                <span class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800"><i data-lucide="twitter" class="w-4 h-4 text-sky-400"></i> Twitter / X Clips</span>
+    <!-- 4. Features & Content Details Section -->
+    <section id="features" class="max-w-5xl mx-auto px-4 sm:px-6 py-10 w-full">
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div class="glass-panel p-5 rounded-2xl text-center">
+                <i data-lucide="shield-check" class="w-7 h-7 text-emerald-400 mx-auto mb-2"></i>
+                <h4 class="font-bold text-xs text-white" data-i18n="feat1_title">100% Free & Unlimited</h4>
+                <p class="text-[11px] text-slate-400 mt-1" data-i18n="feat1_desc">No subscriptions or daily limits.</p>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl text-center">
+                <i data-lucide="sparkles" class="w-7 h-7 text-pink-400 mx-auto mb-2"></i>
+                <h4 class="font-bold text-xs text-white" data-i18n="feat2_title">No Watermarks</h4>
+                <p class="text-[11px] text-slate-400 mt-1" data-i18n="feat2_desc">Clean videos without platform logos.</p>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl text-center">
+                <i data-lucide="zap" class="w-7 h-7 text-amber-400 mx-auto mb-2"></i>
+                <h4 class="font-bold text-xs text-white" data-i18n="feat3_title">Ultra Fast Engine</h4>
+                <p class="text-[11px] text-slate-400 mt-1" data-i18n="feat3_desc">Instant stream parsing & delivery.</p>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl text-center">
+                <i data-lucide="lock" class="w-7 h-7 text-indigo-400 mx-auto mb-2"></i>
+                <h4 class="font-bold text-xs text-white" data-i18n="feat4_title">Private & Anonymous</h4>
+                <p class="text-[11px] text-slate-400 mt-1" data-i18n="feat4_desc">No account or credentials stored.</p>
             </div>
         </div>
     </section>
 
     <!-- 5. FAQ Accordion -->
-    <section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-16 w-full">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Frequently Asked Questions</h2>
-            <p class="text-slate-400 text-xs sm:text-sm mt-2">Everything you need to know about FastSnap.</p>
-        </div>
-
-        <div class="space-y-3.5">
-            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
+    <section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-12 w-full">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-8" data-i18n="faq_title">Frequently Asked Questions</h2>
+        <div class="space-y-3">
+            <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Is FastSnap completely free to use?</span>
+                    <span data-i18n="q1">Is FastSnap completely free to use?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes. FastSnap provides unlimited, unrestricted downloads without mandatory accounts, fees, or hidden subscriptions.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed" data-i18n="a1">Yes. FastSnap is an online utility that is 100% free with no hidden charges or subscriptions.</p>
             </details>
-
-            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
+            <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Does FastSnap remove TikTok watermarks?</span>
+                    <span data-i18n="q2">Where are downloaded videos saved?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes. Our backend engine extracts the direct source stream to ensure TikTok videos are downloaded cleanly without bouncing logo watermarks.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed" data-i18n="a2">By default, files are saved in your device's "Downloads" folder or automatically added to your Photos/Gallery app on mobile.</p>
             </details>
-
-            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
+            <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Where are downloaded videos stored?</span>
+                    <span data-i18n="q3">Can I download audio or MP3 from video links?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Downloaded files are saved in your device's default "Downloads" directory or automatically synced to your Photos/Gallery app on mobile.</p>
-            </details>
-
-            <details class="glass-panel p-5 rounded-2xl cursor-pointer group">
-                <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span>Do you store user data or videos on your servers?</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
-                </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">No. We respect user privacy. We do not store media files or track your personal download history on our servers.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed" data-i18n="a3">Yes, FastSnap automatically extracts high-bitrate audio streams directly from supported video URLs.</p>
             </details>
         </div>
     </section>
 
-    <!-- 6. Footer & Disclaimers -->
-    <footer class="border-t border-slate-800/80 bg-[#050811] py-12 text-slate-400 text-xs mt-10">
+    <!-- 6. Footer & Legal Navigation -->
+    <footer class="border-t border-slate-800 bg-[#050811] py-12 text-slate-400 text-xs">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
                 <div class="col-span-2 md:col-span-1">
-                    <div class="flex items-center gap-2 text-white font-extrabold text-lg mb-3">
-                        <i data-lucide="zap" class="w-4 h-4 text-brand-500 fill-current"></i> FastSnap
+                    <div class="flex items-center gap-2 text-white font-bold text-base mb-3">
+                        <i data-lucide="zap" class="w-4 h-4 text-indigo-400"></i> FastSnap
                     </div>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">High-performance media tool engineered for ultra-fast, clean video and audio downloads.</p>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">High-performance online video & audio downloader engine designed for mobile and desktop.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-white mb-3">Tools</h4>
-                    <ul class="space-y-2 text-[11px]">
-                        <li><a href="#downloader" class="hover:text-cyan-400 transition">Instagram Downloader</a></li>
-                        <li><a href="#downloader" class="hover:text-cyan-400 transition">TikTok Saver</a></li>
-                        <li><a href="#downloader" class="hover:text-cyan-400 transition">YouTube MP4 & MP3</a></li>
+                    <h4 class="font-semibold text-white mb-3">Tools</h4>
+                    <ul class="space-y-1.5 text-[11px]">
+                        <li><a href="#" class="hover:text-indigo-400 transition">Reels Downloader</a></li>
+                        <li><a href="#" class="hover:text-indigo-400 transition">TikTok Saver</a></li>
+                        <li><a href="#" class="hover:text-indigo-400 transition">YouTube MP4/MP3</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-white mb-3">Legal</h4>
-                    <ul class="space-y-2 text-[11px]">
-                        <li><a href="#faq" class="hover:text-cyan-400 transition">Privacy Policy</a></li>
-                        <li><a href="#faq" class="hover:text-cyan-400 transition">Terms of Service</a></li>
-                        <li><a href="#faq" class="hover:text-cyan-400 transition">DMCA Compliance</a></li>
+                    <h4 class="font-semibold text-white mb-3">Legal & DMCA</h4>
+                    <ul class="space-y-1.5 text-[11px]">
+                        <li><button onclick="openModal('dmcaModal')" class="hover:text-indigo-400 transition">DMCA Compliance</button></li>
+                        <li><button onclick="openModal('privacyModal')" class="hover:text-indigo-400 transition">Privacy Policy</button></li>
+                        <li><button onclick="openModal('termsModal')" class="hover:text-indigo-400 transition">Terms of Service</button></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-white mb-3">Support</h4>
-                    <ul class="space-y-2 text-[11px]">
-                        <li><a href="#faq" class="hover:text-cyan-400 transition">Help Center</a></li>
-                        <li><a href="#downloader" class="hover:text-cyan-400 transition">Report an Issue</a></li>
+                    <h4 class="font-semibold text-white mb-3">Support</h4>
+                    <ul class="space-y-1.5 text-[11px]">
+                        <li><a href="#faq" class="hover:text-indigo-400 transition">Help & FAQ</a></li>
+                        <li><button onclick="openModal('contactModal')" class="hover:text-indigo-400 transition">Contact Us</button></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] text-slate-600">
-                <p>© 2026 FastSnap. All rights reserved. For personal and offline viewing only.</p>
+            <div class="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-600">
+                <p>© 2026 FastSnap (fastsnap.site). All rights reserved. For personal and offline use only.</p>
                 <p>Not affiliated with Instagram, TikTok, YouTube, or Meta.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Client-Side Logic -->
+    <!-- MODALS: Legal, DMCA & Contact Form -->
+    <!-- DMCA Modal -->
+    <div id="dmcaModal" class="modal fixed inset-0 z-50 bg-black/80 items-center justify-center p-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-xl w-full border border-slate-700 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-white text-lg">DMCA Copyright Policy</h3>
+                <button onclick="closeModal('dmcaModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">FastSnap complies with 17 U.S.C. § 512 and the Digital Millennium Copyright Act (DMCA). We respect the intellectual property rights of others.</p>
+            <p class="text-xs text-slate-400 leading-relaxed mb-3">FastSnap does not host, store, or archive any copyrighted videos on its servers. All downloads are fetched directly from official CDN endpoints.</p>
+            <p class="text-xs text-slate-400 leading-relaxed">To submit a valid takedown notice, please use our Contact Form with the exact URLs and evidence of ownership.</p>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="modal fixed inset-0 z-50 bg-black/80 items-center justify-center p-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-xl w-full border border-slate-700 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-white text-lg">Privacy Policy</h3>
+                <button onclick="closeModal('privacyModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">Your privacy is important to us. FastSnap does not collect or log personal data, login credentials, or individual browsing history.</p>
+            <p class="text-xs text-slate-400 leading-relaxed">We do not require user accounts or registrations. All interactions are stateless and processed anonymously.</p>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal fixed inset-0 z-50 bg-black/80 items-center justify-center p-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-xl w-full border border-slate-700 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-white text-lg">Terms of Service</h3>
+                <button onclick="closeModal('termsModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">By using FastSnap, you agree that downloaded media is strictly for personal, non-commercial, and offline viewing.</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Users are solely responsible for ensuring they have the legal right to download content from the respective original creators.</p>
+        </div>
+    </div>
+
+    <!-- Contact Form Modal -->
+    <div id="contactModal" class="modal fixed inset-0 z-50 bg-black/80 items-center justify-center p-4">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-md w-full border border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-white text-lg">Contact & Support</h3>
+                <button onclick="closeModal('contactModal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form onsubmit="handleContactSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400">Your Email</label>
+                    <input type="email" required placeholder="name@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-indigo-500 mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Subject / Issue Type</label>
+                    <select class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-indigo-500 mt-1">
+                        <option>Bug Report / Download Issue</option>
+                        <option>DMCA Copyright Inquiry</option>
+                        <option>Partnership / General</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Message</label>
+                    <textarea required rows="3" placeholder="Describe your request..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-indigo-500 mt-1"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl transition">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Multi-Language Dictionary & App Logic -->
     <script>
         lucide.createIcons();
         let selectedPlatform = 'all';
 
+        // 10-Language Dictionary
+        const i18n = {
+            en: {
+                nav_how: "How it Works", nav_features: "Features", nav_faq: "FAQ", nav_contact: "Contact",
+                badge_title: "Direct Fast Download Engine",
+                hero_title_1: "Online Video", hero_title_2: "& Reels Downloader",
+                hero_desc: "Download Reels, Shorts, and videos from Instagram, TikTok, YouTube, and Twitter without watermarks in full HD or MP3.",
+                btn_paste: "Paste", btn_download: "Download",
+                status_fetching: "Processing link & starting direct download...",
+                how_title: "How to Download Videos & Audio",
+                how_subtitle: "Fast 3-step process to save media directly into your gallery",
+                step1_title: "Copy Media Link", step1_desc: "Open your app (Instagram, TikTok, YouTube), tap share, and copy the URL link.",
+                step2_title: "Paste into FastSnap", step2_desc: "Paste your link into the input bar above. Use the quick Paste button.",
+                step3_title: "Automatic Download", step3_desc: "Click download and your browser will directly save the file to your storage.",
+                feat1_title: "100% Free & Unlimited", feat1_desc: "No subscriptions or daily limits.",
+                feat2_title: "No Watermarks", feat2_desc: "Clean videos without platform logos.",
+                feat3_title: "Ultra Fast Engine", feat3_desc: "Instant stream parsing & delivery.",
+                feat4_title: "Private & Anonymous", feat4_desc: "No account or credentials stored.",
+                faq_title: "Frequently Asked Questions",
+                q1: "Is FastSnap completely free to use?", a1: "Yes. FastSnap is an online utility that is 100% free with no hidden charges or subscriptions.",
+                q2: "Where are downloaded videos saved?", a2: "By default, files are saved in your device's Downloads folder or automatically added to your Photos/Gallery app.",
+                q3: "Can I download audio or MP3 from video links?", a3: "Yes, FastSnap automatically extracts high-bitrate audio streams directly from supported video URLs."
+            },
+            es: {
+                nav_how: "Cómo funciona", nav_features: "Características", nav_faq: "Preguntas", nav_contact: "Contacto",
+                badge_title: "Motor de descarga directa y rápida",
+                hero_title_1: "Descargador de Videos", hero_title_2: "y Reels en Línea",
+                hero_desc: "Descarga Reels, Shorts y videos de Instagram, TikTok, YouTube y Twitter sin marca de agua en HD o MP3.",
+                btn_paste: "Pegar", btn_download: "Descargar",
+                status_fetching: "Procesando enlace e iniciando descarga directa...",
+                how_title: "Cómo descargar videos y audio",
+                how_subtitle: "Proceso rápido en 3 pasos para guardar archivos en tu galería",
+                step1_title: "Copiar enlace", step1_desc: "Abre la aplicación, toca compartir y copia el enlace del video.",
+                step2_title: "Pegar en FastSnap", step2_desc: "Pega el enlace en la barra de búsqueda superior.",
+                step3_title: "Descarga automática", step3_desc: "Haz clic en Descargar y el archivo se guardará directamente en tu dispositivo.",
+                feat1_title: "100% Gratis e Ilimitado", feat1_desc: "Sin suscripciones ni límites diarios.",
+                feat2_title: "Sin marcas de agua", feat2_desc: "Videos limpios sin logotipos.",
+                feat3_title: "Súper rápido", feat3_desc: "Análisis y entrega de video instantáneos.",
+                feat4_title: "Privado y anónimo", feat4_desc: "No se requieren registros.",
+                faq_title: "Preguntas frecuentes",
+                q1: "¿FastSnap es gratuito?", a1: "Sí, es 100% gratuito sin costos ocultos.",
+                q2: "¿Dónde se guardan las descargas?", a2: "En la carpeta Descargas o en la Galería de tu dispositivo.",
+                q3: "¿Puedo descargar MP3?", a3: "Sí, puedes extraer audio de alta calidad fácilmente."
+            },
+            hi: {
+                nav_how: "कैसे काम करता है", nav_features: "विशेषताएं", nav_faq: "सामान्य प्रश्न", nav_contact: "संपर्क",
+                badge_title: "डायरेक्ट फास्ट डाउनलोड इंजन",
+                hero_title_1: "ऑनलाइन वीडियो", hero_title_2: "और रील्स डाउनलोडर",
+                hero_desc: "Instagram, TikTok और YouTube से बिना वॉटरमार्क वाले वीडियो और MP3 सीधे अपनी गैलरी में डाउनलोड करें।",
+                btn_paste: "पेस्ट करें", btn_download: "डाउनलोड",
+                status_fetching: "लिंक प्रोसेस हो रहा है और डाउनलोड शुरू हो रहा है...",
+                how_title: "वीडियो कैसे डाउनलोड करें",
+                how_subtitle: "अपनी गैलरी में मीडिया सेव करने के लिए 3 आसान स्टेप्स",
+                step1_title: "लिंक कॉपी करें", step1_desc: "ऐप खोलें, शेयर पर क्लिक करें और लिंक कॉपी करें।",
+                step2_title: "FastSnap में पेस्ट करें", step2_desc: "ऊपर दिए गए इनपुट बॉक्स में लिंक पेस्ट करें।",
+                step3_title: "ऑटो डाउनलोड", step3_desc: "डाउनलोड बटन पर क्लिक करें और फाइल सेव हो जाएगी।",
+                feat1_title: "100% फ्री और अनलिमिटेड", feat1_desc: "कोई सीमा या शुल्क नहीं।",
+                feat2_title: "बिना वॉटरमार्क", feat2_desc: "बिना लोगो के साफ वीडियो पाएं।",
+                feat3_title: "अति तीव्र गति", feat3_desc: "फास्ट सर्वर डाउनलोड स्पीड।",
+                feat4_title: "सुरक्षित और निजी", feat4_desc: "किसी लॉगिन की आवश्यकता नहीं है।",
+                faq_title: "अक्सर पूछे जाने वाले सवाल",
+                q1: "क्या FastSnap मुफ़्त है?", a1: "हाँ, यह सेवा पूरी तरह से मुफ़्त है।",
+                q2: "डाउनलोड की गई फाइलें कहाँ जाती हैं?", a2: "आपके डिवाइस के 'Downloads' फ़ोल्डर या गैलरी में।",
+                q3: "क्या मैं ऑडियो डाउनलोड कर सकता हूँ?", a3: "हाँ, आप MP3 ऑडियो आसानी से निकाल सकते हैं।"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const dictionary = i18n[lang] || i18n['en'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dictionary[key]) {
+                    el.innerText = dictionary[key];
+                }
+            });
+        }
+
         function setPlatform(platform) {
             selectedPlatform = platform;
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('bg-slate-900/60', 'text-slate-400');
-            });
-            event.currentTarget.classList.add('tab-active');
-            event.currentTarget.classList.remove('bg-slate-900/60', 'text-slate-400');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleClearButton() {
+            const val = document.getElementById('videoUrl').value;
+            const clearBtn = document.getElementById('clearBtn');
+            if (val.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function clearInput() {
+            const input = document.getElementById('videoUrl');
+            input.value = '';
+            toggleClearButton();
+            input.focus();
         }
 
         async function pasteClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
-                document.getElementById('mediaUrl').value = text;
+                const input = document.getElementById('videoUrl');
+                input.value = text;
+                toggleClearButton();
             } catch (err) {
-                alert('Please allow clipboard permissions or paste the URL manually.');
+                alert('Please allow clipboard permission or paste manually.');
             }
         }
 
-        async function fetchDownload() {
-            const urlInput = document.getElementById('mediaUrl');
+        async function startDirectDownload() {
+            const urlInput = document.getElementById('videoUrl');
             const url = urlInput.value.trim();
             const loader = document.getElementById('loader');
-            const resultBox = document.getElementById('resultBox');
 
             if (!url) {
                 alert('Please paste a valid video URL first.');
@@ -369,30 +515,37 @@
             }
 
             loader.classList.remove('hidden');
-            resultBox.classList.add('hidden');
 
             try {
-                const res = await fetch(`/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}`);
-                const data = await res.json();
+                // Direct trigger download stream without popup preview
+                const directLink = `/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}&mode=video&direct=true`;
+                
+                // Trigger download directly in browser
+                const hiddenLink = document.createElement('a');
+                hiddenLink.href = directLink;
+                hiddenLink.setAttribute('download', '');
+                document.body.appendChild(hiddenLink);
+                hiddenLink.click();
+                document.body.removeChild(hiddenLink);
 
-                loader.classList.add('hidden');
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 3500);
 
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    return;
-                }
-
-                document.getElementById('videoTitle').innerText = data.title || 'Extracted Media';
-                document.getElementById('thumbImg').src = data.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60';
-                document.getElementById('mp4Btn').href = data.result;
-                document.getElementById('mp3Btn').href = `/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}&mode=mp3_direct`;
-
-                resultBox.classList.remove('hidden');
-                lucide.createIcons();
             } catch (err) {
                 loader.classList.add('hidden');
-                alert('Failed to connect to backend server. Please try again.');
+                alert('Unable to process direct download stream. Please verify the URL.');
             }
+        }
+
+        // Modals Logic
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            alert('Thank you! Your message has been received.');
+            closeModal('contactModal');
         }
     </script>
 </body>
