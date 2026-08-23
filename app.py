@@ -1,4 +1,4 @@
-import io
+import os
 import requests
 from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
@@ -19,7 +19,7 @@ def home():
 def download_media():
     url = request.args.get('url')
     service = request.args.get('service', 'all')
-    mode = request.args.get('mode', 'video') 
+    mode = request.args.get('mode', 'video')
     direct = request.args.get('direct', 'false')
     
     if not url:
@@ -37,7 +37,7 @@ def download_media():
             stream_url = info.get('url')
             title = info.get('title', 'FastSnap_Media').replace('"', '').replace('/', '_')
             
-            # TikTok Clean Link Extraction
+            # Clean TikTok direct stream extraction
             if service == 'tiktok' and mode != 'audio':
                 formats = info.get('formats', [])
                 for f in formats:
@@ -45,7 +45,7 @@ def download_media():
                         stream_url = f.get('url')
                         break
 
-            # Direct Force Download Proxy
+            # Direct file delivery with Content-Disposition attachment header
             if direct == 'true':
                 ext = 'mp3' if mode == 'audio' else 'mp4'
                 headers = {'User-Agent': 'Mozilla/5.0'}
@@ -69,4 +69,5 @@ def download_media():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
