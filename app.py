@@ -67,7 +67,21 @@ def download_media():
                 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route('/robots.txt')
+def robots():
+    try:
+        with open('robots.txt', 'r', encoding='utf-8') as f:
+            return Response(f.read(), mimetype='text/plain')
+    except Exception as e:
+        return f"Error: {str(e)}", 404
 
+@app.route('/sitemap.xml')
+def sitemap():
+    try:
+        with open('sitemap.xml', 'r', encoding='utf-8') as f:
+            return Response(f.read(), mimetype='application/xml')
+    except Exception as e:
+        return f"Error: {str(e)}", 404
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
