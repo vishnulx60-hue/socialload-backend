@@ -18,11 +18,7 @@ def get_base_opts():
         'no_warnings': True,
         'nocheckcertificate': True,
         'noplaylist': True,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['web', 'ios', 'android']
-            }
-        }
+        'ignoreerrors': True
     }
     if os.path.exists(COOKIE_FILE):
         opts['cookiefile'] = COOKIE_FILE
@@ -44,14 +40,16 @@ def get_media_info():
 
     try:
         opts = get_base_opts()
+        opts['extract_flat'] = 'in_playlist'
         opts['skip_download'] = True
         
         with yt_dlp.YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(url, download=False)
+            # process=False extracts pure metadata without requesting stream format tables
+            info = ydl.extract_info(url, download=False, process=False)
             
-            title = info.get('title', 'FastSnap_Media')
-            thumbnail = info.get('thumbnail', '')
-            duration = info.get('duration_string', '')
+            title = info.get('title') or 'FastSnap Media'
+            thumbnail = info.get('thumbnail') or (info.get('thumbnails', [{}])[-1].get('url') if info.get('thumbnails') else '')
+            duration = info.get('duration_string') or ''
 
             return jsonify({
                 "title": title,
@@ -72,11 +70,11 @@ def download_media():
     
     try:
         opts = get_base_opts()
-        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
+        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best'
         
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            title = info.get('title', 'FastSnap_Media').replace('"', '').replace('/', '_')
+            title = (info.get('title') or 'FastSnap_Media').replace('"', '').replace('/', '_')
             
             stream_url = info.get('url')
             if not stream_url and 'formats' in info:
@@ -87,8 +85,11 @@ def download_media():
                     elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
                         stream_url = f.get('url')
                         break
-                if not stream_url:
+                if not stream_url and info['formats']:
                     stream_url = info['formats'][-1].get('url')
+
+            if not stream_url:
+                return jsonify({"error": "Direct stream not found"}), 500
 
             ext = 'mp3' if mode == 'audio' else 'mp4'
             headers = {
