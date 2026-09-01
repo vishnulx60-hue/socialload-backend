@@ -664,6 +664,45 @@
         }
 
         async function startDirectDownload() {
+            async function startDirectDownload() {
+    const urlInput = document.getElementById('videoUrl');
+    const url = urlInput.value.trim();
+    const loader = document.getElementById('loader');
+
+    if (!url) {
+        alert('Please paste a valid video URL first.');
+        return;
+    }
+
+    // --- Record the download event in GA4 ---
+    if (typeof gtag === 'function') {
+        gtag('event', 'media_download', {
+            'platform': selectedPlatform,
+            'event_category': 'conversion'
+        });
+    }
+
+    loader.classList.remove('hidden');
+
+    try {
+        const directLink = `/download?url=${encodeURIComponent(url)}&service=${selectedPlatform}&mode=video&direct=true`;
+        
+        const hiddenLink = document.createElement('a');
+        hiddenLink.href = directLink;
+        hiddenLink.setAttribute('download', '');
+        document.body.appendChild(hiddenLink);
+        hiddenLink.click();
+        document.body.removeChild(hiddenLink);
+
+        setTimeout(() => {
+            loader.classList.add('hidden');
+        }, 3500);
+
+    } catch (err) {
+        loader.classList.add('hidden');
+        alert('Unable to process direct download stream. Please verify the URL.');
+    }
+}
             const urlInput = document.getElementById('videoUrl');
             const url = urlInput.value.trim();
             const loader = document.getElementById('loader');
