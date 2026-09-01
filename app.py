@@ -25,12 +25,8 @@ def get_base_opts():
         'noplaylist': True,
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'ios'],
-                'player_skip': ['webpage', 'configs']
+                'player_client': ['mweb', 'android', 'ios']
             }
-        },
-        'http_headers': {
-            'User-Agent': 'com.google.android.youtube/19.29.37 (Linux; U; Android 11; en_US) gzip'
         }
     }
     if os.path.exists(COOKIE_FILE) and os.path.getsize(COOKIE_FILE) > 0:
@@ -133,19 +129,17 @@ def download_media():
             ext = 'mp3' if mode == 'audio' else 'mp4'
             mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
             
-            # Fetch remote headers
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': '*/*'
             }
-            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=25)
+            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=30)
 
             def generate_stream():
                 for chunk in upstream.iter_content(chunk_size=1024 * 64):
                     if chunk:
                         yield chunk
 
-            # Return stream directly with download header
             return Response(
                 generate_stream(),
                 content_type=mime,
