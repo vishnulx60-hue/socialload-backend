@@ -19,54 +19,22 @@
     <meta property="og:url" content="https://fastsnap.site/">
     <meta property="og:title" content="FastSnap - Free Online Video Downloader">
     <meta property="og:description" content="Download Reels, TikTok clips without watermarks, and HD videos in one click. Free, unlimited, and no registration.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80">
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="FastSnap - Lightning-Fast Video Downloader">
-    <meta name="twitter:description" content="Download high quality videos from Instagram, TikTok, and YouTube with direct download capability.">
-
-    <!-- Schema.org JSON-LD (WebApplication + FAQ) -->
+    <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebApplication",
-          "name": "FastSnap",
-          "url": "https://fastsnap.site/",
-          "applicationCategory": "MultimediaApplication",
-          "operatingSystem": "All",
-          "browserRequirements": "Requires JavaScript. Requires HTML5.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-          },
-          "description": "FastSnap is an online tool to download Instagram Photos, Reels, Videos, Stories, and TikTok clips without watermarks."
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "How to download Instagram Reels and Videos without watermark?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Copy the video URL from Instagram or TikTok, paste it into the FastSnap search bar, click Search, preview the media, and click Download MP4."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is FastSnap free with unlimited downloads?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, FastSnap provides 100% free, unlimited, and fast downloads across all desktop and mobile browsers."
-              }
-            }
-          ]
-        }
-      ]
+      "@type": "WebApplication",
+      "name": "FastSnap",
+      "url": "https://fastsnap.site/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "FastSnap is an online tool to download Instagram Photos, Reels, Videos, Stories, and TikTok clips without watermarks."
     }
     </script>
 
@@ -102,28 +70,16 @@
                 <span class="text-2xl font-extrabold tracking-tight text-white">Fast<span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Snap</span></span>
             </a>
 
-            <!-- Navigation Links -->
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-                <a href="#features-grid" class="hover:text-white transition" data-i18n="nav_features">Features</a>
-                <a href="#how-it-works" class="hover:text-white transition" data-i18n="nav_how">How it Works</a>
-                <a href="#faq" class="hover:text-white transition" data-i18n="nav_faq">FAQ</a>
-                <button onclick="openModal('contactModal')" class="hover:text-white transition" data-i18n="nav_contact">Contact</button>
+                <a href="#features-grid" class="hover:text-white transition">Features</a>
+                <a href="#how-it-works" class="hover:text-white transition">How it Works</a>
+                <a href="#faq" class="hover:text-white transition">FAQ</a>
+                <button onclick="openModal('contactModal')" class="hover:text-white transition">Contact</button>
             </nav>
 
-            <!-- Language Switcher -->
-            <div class="relative">
-                <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer hover:border-indigo-500 transition">
-                    <option value="en">English (EN)</option>
-                    <option value="es">Español (ES)</option>
-                    <option value="hi">हिन्दी (HI)</option>
-                    <option value="fr">Français (FR)</option>
-                    <option value="de">Deutsch (DE)</option>
-                    <option value="pt">Português (PT)</option>
-                    <option value="id">Bahasa Indonesia (ID)</option>
-                    <option value="ar">العربية (AR)</option>
-                    <option value="ru">Русский (RU)</option>
-                    <option value="ja">日本語 (JA)</option>
-                </select>
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                <span class="text-xs font-semibold text-emerald-400 hidden sm:inline">Engine Online</span>
             </div>
         </div>
     </header>
@@ -132,14 +88,14 @@
     <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-16 w-full text-center">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/70 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-6">
             <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span data-i18n="badge_title">HD Media & Audio Downloader Engine</span>
+            <span>HD Media & Audio Downloader Engine</span>
         </div>
 
         <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
-            <span data-i18n="hero_title_1">Fast Online Video</span> <br class="hidden sm:inline">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400" data-i18n="hero_title_2">& Reels Downloader</span>
+            Fast Online Video <br class="hidden sm:inline">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400">& Reels Downloader</span>
         </h1>
-        <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed" data-i18n="hero_desc">
+        <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
             Download Reels, Videos, Stories, and TikToks in original High Definition quality with full sound and no watermarks.
         </p>
 
@@ -150,13 +106,16 @@
                     <i data-lucide="layers" class="w-4 h-4"></i> Auto Detect
                 </button>
                 <button onclick="setPlatform('instagram')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
-                    <i data-lucide="instagram" class="w-4 h-4 text-pink-400"></i> Instagram
+                    <svg class="w-4 h-4 text-pink-400 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    Instagram
                 </button>
                 <button onclick="setPlatform('tiktok')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
-                    <i data-lucide="film" class="w-4 h-4 text-cyan-400"></i> TikTok
+                    <svg class="w-4 h-4 text-cyan-400 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-1-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 2.89 3.46 2.74 1.34-.04 2.54-.87 3.04-2.1.25-.57.34-1.2.33-1.83.02-4.78.01-9.56.01-14.34z"/></svg>
+                    TikTok
                 </button>
                 <button onclick="setPlatform('youtube')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 flex items-center gap-2 transition">
-                    <i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> YouTube
+                    <svg class="w-4 h-4 text-red-500 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    YouTube
                 </button>
             </div>
 
@@ -171,12 +130,12 @@
                     </button>
 
                     <button onclick="pasteClipboard()" type="button" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5 flex-shrink-0">
-                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> <span data-i18n="btn_paste">Paste</span>
+                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Paste
                     </button>
                 </div>
                 
                 <button onclick="fetchMediaInfo()" id="searchBtn" class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 hover:opacity-95 text-white font-bold px-8 py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 flex-shrink-0">
-                    <i data-lucide="search" class="w-4 h-4"></i> <span data-i18n="btn_search">Search</span>
+                    <i data-lucide="search" class="w-4 h-4"></i> Search
                 </button>
             </div>
 
@@ -184,7 +143,7 @@
             <div id="loader" class="hidden my-6">
                 <div class="inline-flex items-center gap-3 bg-slate-900 border border-slate-800 px-6 py-3.5 rounded-2xl text-xs sm:text-sm text-slate-300 shadow-xl">
                     <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-indigo-400"></i>
-                    <span data-i18n="status_fetching">Extracting media and generating preview...</span>
+                    <span>Extracting media and generating preview...</span>
                 </div>
             </div>
 
@@ -212,7 +171,7 @@
         </div>
     </main>
 
-    <!-- Rich SEO Feature Cards (FastDL Style) -->
+    <!-- Rich Feature Section -->
     <section id="features-grid" class="max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full border-t border-slate-800/80">
         <div class="text-center mb-10">
             <h2 class="text-2xl sm:text-3xl font-black text-white">All-in-One Online Media Downloader</h2>
@@ -220,25 +179,34 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
+            <!-- Instagram -->
             <div class="glass-panel p-6 rounded-3xl">
                 <div class="w-10 h-10 bg-pink-500/10 border border-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center mb-4">
-                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                    <svg class="w-5 h-5 text-pink-400 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
                 </div>
                 <h3 class="font-bold text-white text-base mb-2">Instagram Reels & Video Downloader</h3>
                 <p class="text-slate-400 text-xs leading-relaxed">Save Instagram Reels, IGTV, posts, and videos in high-definition MP4 format with pristine audio synchronisation. No account login needed.</p>
             </div>
 
+            <!-- TikTok -->
             <div class="glass-panel p-6 rounded-3xl">
                 <div class="w-10 h-10 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center mb-4">
-                    <i data-lucide="film" class="w-5 h-5"></i>
+                    <svg class="w-5 h-5 text-cyan-400 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-1-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 2.89 3.46 2.74 1.34-.04 2.54-.87 3.04-2.1.25-.57.34-1.2.33-1.83.02-4.78.01-9.56.01-14.34z"/>
+                    </svg>
                 </div>
                 <h3 class="font-bold text-white text-base mb-2">TikTok Downloader (No Watermark)</h3>
                 <p class="text-slate-400 text-xs leading-relaxed">Remove the moving TikTok watermark logo completely. Download HD clips directly into your phone gallery or desktop folder instantly.</p>
             </div>
 
+            <!-- YouTube -->
             <div class="glass-panel p-6 rounded-3xl">
                 <div class="w-10 h-10 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl flex items-center justify-center mb-4">
-                    <i data-lucide="youtube" class="w-5 h-5"></i>
+                    <svg class="w-5 h-5 text-red-400 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
                 </div>
                 <h3 class="font-bold text-white text-base mb-2">YouTube Shorts & MP3 Converter</h3>
                 <p class="text-slate-400 text-xs leading-relaxed">Extract YouTube Shorts and convert videos into crystal-clear 320kbps MP3 audio streams without paying for premium subscriptions.</p>
@@ -249,15 +217,15 @@
     <!-- How It Works Section -->
     <section id="how-it-works" class="max-w-5xl mx-auto px-4 sm:px-6 py-12 w-full">
         <div class="text-center mb-10">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-white" data-i18n="how_title">How to Download Videos & Audio</h2>
-            <p class="text-slate-400 text-xs sm:text-sm mt-1" data-i18n="how_subtitle">Fast 3-step process to save media directly into your gallery</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">How to Download Videos & Audio</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-1">Fast 3-step process to save media directly into your gallery</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
             <div class="glass-panel p-6 rounded-3xl text-center">
                 <div class="w-12 h-12 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-lg">1</div>
-                <h3 class="font-bold text-white text-sm mb-1.5" data-i18n="step1_title">Copy Media Link</h3>
-                <p class="text-slate-400 text-xs leading-relaxed" data-i18n="step1_desc">Open Instagram, TikTok, or YouTube, tap Share, and copy the link.</p>
+                <h3 class="font-bold text-white text-sm mb-1.5">Copy Media Link</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Open Instagram, TikTok, or YouTube, tap Share, and copy the link.</p>
             </div>
             <div class="glass-panel p-6 rounded-3xl text-center">
                 <div class="w-12 h-12 bg-cyan-600/10 border border-cyan-500/20 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 font-black text-lg">2</div>
@@ -274,28 +242,28 @@
 
     <!-- FAQ Section -->
     <section id="faq" class="max-w-3xl mx-auto px-4 sm:px-6 py-12 w-full">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-8" data-i18n="faq_title">Frequently Asked Questions</h2>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-8">Frequently Asked Questions</h2>
         <div class="space-y-3">
             <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
                     <span>Why do downloaded videos sometimes have no audio on other sites?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Many social platforms store high-definition video and audio tracks separately. FastSnap automatically combines both streams into a single, unified MP4 file so you always get sound.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Many social platforms store video and audio tracks separately. FastSnap automatically selects unified high-quality streams so you always get crisp sound.</p>
             </details>
             <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span data-i18n="q1">Is FastSnap completely free to use?</span>
+                    <span>Is FastSnap completely free to use?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed" data-i18n="a1">Yes. FastSnap is an online utility that is 100% free with no hidden charges or subscriptions.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">Yes. FastSnap is an online utility that is 100% free with no hidden charges or subscriptions.</p>
             </details>
             <details class="glass-panel p-4 rounded-xl cursor-pointer group">
                 <summary class="font-semibold text-xs sm:text-sm text-white flex items-center justify-between">
-                    <span data-i18n="q2">Where are downloaded videos saved?</span>
+                    <span>Where are downloaded videos saved?</span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <p class="text-slate-400 text-xs mt-3 leading-relaxed" data-i18n="a2">By default, files are saved in your device's Downloads folder or automatically added to your Photos/Gallery app on mobile.</p>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed">By default, files are saved in your device's Downloads folder or automatically added to your Photos/Gallery app on mobile.</p>
             </details>
         </div>
     </section>
@@ -395,7 +363,7 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- JavaScript Handler -->
     <script>
         lucide.createIcons();
         let selectedPlatform = 'all';
@@ -437,66 +405,40 @@
             }
         }
 
-       function triggerFileDownload(mode) {
-    if (!currentTargetUrl) return;
+        async function fetchMediaInfo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const loader = document.getElementById('loader');
+            const previewCard = document.getElementById('previewCard');
 
-    const loader = document.getElementById('loader');
-    loader.classList.remove('hidden');
+            if (!url) {
+                alert('Please paste a media URL first.');
+                return;
+            }
 
-    if (typeof gtag === 'function') {
-        gtag('event', 'media_download', {
-            'platform': selectedPlatform,
-            'format': mode
-        });
-    }
+            currentTargetUrl = url;
+            loader.classList.remove('hidden');
+            previewCard.classList.add('hidden');
 
-    const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
+            try {
+                const res = await fetch(`/info?url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                loader.classList.add('hidden');
 
-    // Direct window trigger for native browser download streaming
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = downloadUrl;
-    document.body.appendChild(iframe);
+                if (data.error) {
+                    alert('Could not fetch preview: ' + data.error);
+                    return;
+                }
 
-    setTimeout(() => {
-        loader.classList.add('hidden');
-        setTimeout(() => document.body.removeChild(iframe), 60000);
-    }, 2500);
-}
-    try {
-        const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
-        
-        // Fetch to verify headers before downloading
-        const response = await fetch(downloadUrl);
-        const contentType = response.headers.get('content-type') || '';
+                document.getElementById('previewTitle').innerText = data.title || 'Extracted Media';
+                document.getElementById('previewThumb').src = data.thumbnail;
+                document.getElementById('previewDuration').innerText = data.duration || '';
+                previewCard.classList.remove('hidden');
 
-        if (!response.ok || contentType.includes('application/json')) {
-            const errorData = await response.json();
-            loader.classList.add('hidden');
-            alert('Download Error: ' + (errorData.error || 'Failed to download file.'));
-            return;
+            } catch (err) {
+                loader.classList.add('hidden');
+                alert('Error parsing media link. Please verify URL.');
+            }
         }
-
-        const blob = await response.blob();
-        loader.classList.add('hidden');
-
-        const objectUrl = window.URL.createObjectURL(blob);
-        const hiddenLink = document.createElement('a');
-        hiddenLink.href = objectUrl;
-        
-        // Extract title from filename header or fallback
-        const ext = mode === 'audio' ? 'mp3' : 'mp4';
-        hiddenLink.download = `FastSnap_Download.${ext}`;
-        document.body.appendChild(hiddenLink);
-        hiddenLink.click();
-        document.body.removeChild(hiddenLink);
-        window.URL.revokeObjectURL(objectUrl);
-
-    } catch (err) {
-        loader.classList.add('hidden');
-        alert('Download connection interrupted. Please try again.');
-    }
-}
 
         function triggerFileDownload(mode) {
             if (!currentTargetUrl) return;
@@ -509,12 +451,7 @@
             }
 
             const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
-            const hiddenLink = document.createElement('a');
-            hiddenLink.href = downloadUrl;
-            hiddenLink.setAttribute('download', '');
-            document.body.appendChild(hiddenLink);
-            hiddenLink.click();
-            document.body.removeChild(hiddenLink);
+            window.location.href = downloadUrl;
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
