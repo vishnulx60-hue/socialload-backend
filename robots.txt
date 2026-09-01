@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Direct Google & Bing to your sitemap
+Sitemap: https://fastsnap.site/sitemap.xml
