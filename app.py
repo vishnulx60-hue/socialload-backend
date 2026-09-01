@@ -10,8 +10,11 @@ CORS(app)
 
 COOKIE_FILE = '/tmp/yt_cookies.txt'
 if os.environ.get('YOUTUBE_COOKIES'):
-    with open(COOKIE_FILE, 'w', encoding='utf-8') as f:
-        f.write(os.environ.get('YOUTUBE_COOKIES'))
+    try:
+        with open(COOKIE_FILE, 'w', encoding='utf-8') as f:
+            f.write(os.environ.get('YOUTUBE_COOKIES'))
+    except Exception:
+        pass
 
 def get_base_opts():
     opts = {
@@ -57,7 +60,7 @@ def get_media_info():
                 data = resp.json()
                 return jsonify({
                     "title": data.get('title', 'YouTube Video'),
-                    "thumbnail": f"https://img.youtube.com/vi/{yt_id}/maxresdefault.jpg",
+                    "thumbnail": f"https://img.youtube.com/vi/{yt_id}/hqdefault.jpg",
                     "duration": "HD",
                     "url": url
                 })
@@ -125,12 +128,11 @@ def download_media():
             ext = 'mp3' if mode == 'audio' else 'mp4'
             mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
 
-            # Stream data directly
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': '*/*'
             }
-            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=20)
+            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=25)
             
             if upstream.status_code != 200:
                 return jsonify({"error": f"Upstream source returned HTTP {upstream.status_code}"}), 500
@@ -164,5 +166,5 @@ def sitemap():
         return f"Error: {str(e)}", 404
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
