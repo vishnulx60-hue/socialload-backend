@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
@@ -18,11 +19,20 @@ def get_base_opts():
         'no_warnings': True,
         'nocheckcertificate': True,
         'noplaylist': True,
-        'ignoreerrors': True
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web', 'ios', 'android', 'mweb']
+            }
+        }
     }
     if os.path.exists(COOKIE_FILE):
         opts['cookiefile'] = COOKIE_FILE
     return opts
+
+def get_youtube_video_id(url):
+    pattern = r'(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|user\/\S+|feeds\/api\/videos\/|.*[?&]v=))([\w-]{11})'
+    match = re.search(pattern, url)
+    return match.group(1) if match else None
 
 @app.route('/')
 def home():
@@ -38,23 +48,42 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
+    # 1. Fast path for YouTube links via official oEmbed API (bypasses bot blocks completely)
+    yt_id = get_youtube_video_id(url)
+    if yt_id:
+        try:
+            oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={yt_id}&format=json"
+            resp = requests.get(oembed_url, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                return jsonify({
+                    "title": data.get('title', 'YouTube Video'),
+                    "thumbnail": f"https://img.youtube.com/vi/{yt_id}/maxresdefault.jpg",
+                    "duration": "HD",
+                    "url": url
+                })
+        except Exception:
+            pass  # Fallback to standard yt-dlp if oembed fails
+
+    # 2. Universal metadata extraction for Instagram, TikTok, etc.
     try:
         opts = get_base_opts()
-        opts['extract_flat'] = 'in_playlist'
         opts['skip_download'] = True
         
         with yt_dlp.YoutubeDL(opts) as ydl:
-            # process=False extracts pure metadata without requesting stream format tables
-            info = ydl.extract_info(url, download=False, process=False)
+            info = ydl.extract_info(url, download=False)
+            if not info:
+                return jsonify({"error": "Could not extract media info"}), 500
             
             title = info.get('title') or 'FastSnap Media'
-            thumbnail = info.get('thumbnail') or (info.get('thumbnails', [{}])[-1].get('url') if info.get('thumbnails') else '')
-            duration = info.get('duration_string') or ''
+            thumbnail = info.get('thumbnail')
+            if not thumbnail and info.get('thumbnails'):
+                thumbnail = info['thumbnails'][-1].get('url')
 
             return jsonify({
                 "title": title,
-                "thumbnail": thumbnail,
-                "duration": duration,
+                "thumbnail": thumbnail or '',
+                "duration": info.get('duration_string') or '',
                 "url": url
             })
     except Exception as e:
@@ -70,10 +99,14 @@ def download_media():
     
     try:
         opts = get_base_opts()
-        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best'
+        # Grab progressive combined MP4 or audio stream
+        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
         
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
+            if not info:
+                return jsonify({"error": "Unable to extract stream"}), 500
+                
             title = (info.get('title') or 'FastSnap_Media').replace('"', '').replace('/', '_')
             
             stream_url = info.get('url')
