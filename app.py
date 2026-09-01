@@ -51,7 +51,6 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # 1. Fast path for YouTube using official oEmbed
     yt_id = get_youtube_video_id(url)
     if yt_id:
         try:
@@ -68,7 +67,6 @@ def get_media_info():
         except Exception:
             pass
 
-    # 2. General metadata extraction for Instagram, TikTok, etc.
     try:
         opts = get_base_opts()
         opts['skip_download'] = True
@@ -124,7 +122,6 @@ def download_media():
             if not stream_url:
                 return jsonify({"error": "Direct stream link not found"}), 500
 
-            # Direct redirect sends the user straight to the CDN stream
             return redirect(stream_url, code=302)
 
     except Exception as e:
