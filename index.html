@@ -441,18 +441,30 @@
         }
 
         function triggerFileDownload(mode) {
-            if (!currentTargetUrl) return;
+    if (!currentTargetUrl) return;
 
-            if (typeof gtag === 'function') {
-                gtag('event', 'media_download', {
-                    'platform': selectedPlatform,
-                    'format': mode
-                });
-            }
+    const loader = document.getElementById('loader');
+    loader.classList.remove('hidden');
 
-            const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
-            window.location.href = downloadUrl;
-        }
+    if (typeof gtag === 'function') {
+        gtag('event', 'media_download', {
+            'platform': selectedPlatform,
+            'format': mode
+        });
+    }
+
+    const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
+    
+    const hiddenIframe = document.createElement('iframe');
+    hiddenIframe.style.display = 'none';
+    hiddenIframe.src = downloadUrl;
+    document.body.appendChild(hiddenIframe);
+
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        setTimeout(() => document.body.removeChild(hiddenIframe), 60000);
+    }, 2000);
+}
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
