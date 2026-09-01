@@ -7,17 +7,17 @@ import yt_dlp
 app = Flask(__name__)
 CORS(app)
 
-# Write cookie file from environment variable if present
 COOKIE_FILE = '/tmp/yt_cookies.txt'
 if os.environ.get('YOUTUBE_COOKIES'):
     with open(COOKIE_FILE, 'w', encoding='utf-8') as f:
         f.write(os.environ.get('YOUTUBE_COOKIES'))
 
-def get_ydl_opts(extra_opts=None):
+def get_base_opts():
     opts = {
         'quiet': True,
         'no_warnings': True,
         'nocheckcertificate': True,
+        'noplaylist': True,
         'extractor_args': {
             'youtube': {
                 'player_client': ['web', 'ios', 'android']
@@ -26,9 +26,6 @@ def get_ydl_opts(extra_opts=None):
     }
     if os.path.exists(COOKIE_FILE):
         opts['cookiefile'] = COOKIE_FILE
-        
-    if extra_opts:
-        opts.update(extra_opts)
     return opts
 
 @app.route('/')
@@ -46,31 +43,24 @@ def get_media_info():
         return jsonify({"error": "No URL provided"}), 400
 
     try:
-        ydl_opts = get_ydl_opts({'skip_download': True})
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        opts = get_base_opts()
+        opts['skip_download'] = True
+        
+        with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
             title = info.get('title', 'FastSnap_Media')
             thumbnail = info.get('thumbnail', '')
             duration = info.get('duration_string', '')
-            
-            stream_url = info.get('url')
-            if not stream_url and 'formats' in info:
-                for f in reversed(info['formats']):
-                    if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                        stream_url = f.get('url')
-                        break
-                if not stream_url and info['formats']:
-                    stream_url = info['formats'][-1].get('url')
 
             return jsonify({
                 "title": title,
                 "thumbnail": thumbnail,
                 "duration": duration,
-                "preview_url": stream_url or thumbnail
+                "url": url
             })
     except Exception as e:
-        return jsonify({"error": f"Failed to extract info: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/download', methods=['GET'])
 def download_media():
@@ -81,14 +71,14 @@ def download_media():
         return jsonify({"error": "No URL provided"}), 400
     
     try:
-        format_rule = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[ext=mp4]/best'
-        ydl_opts = get_ydl_opts({'format': format_rule})
+        opts = get_base_opts()
+        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
         
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            stream_url = info.get('url')
             title = info.get('title', 'FastSnap_Media').replace('"', '').replace('/', '_')
             
+            stream_url = info.get('url')
             if not stream_url and 'formats' in info:
                 for f in reversed(info['formats']):
                     if mode == 'audio' and f.get('acodec') != 'none':
@@ -102,14 +92,14 @@ def download_media():
 
             ext = 'mp3' if mode == 'audio' else 'mp4'
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': '*/*'
             }
             
-            req = requests.get(stream_url, headers=headers, stream=True, timeout=30)
+            req = requests.get(stream_url, headers=headers, stream=True, timeout=60)
             
             return Response(
-                req.iter_content(chunk_size=1024 * 16),
+                req.iter_content(chunk_size=1024 * 32),
                 content_type=req.headers.get('content-type', 'application/octet-stream'),
                 headers={
                     "Content-Disposition": f'attachment; filename="{title}.{ext}"'
