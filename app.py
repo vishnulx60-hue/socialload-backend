@@ -1,7 +1,8 @@
 import os
 import re
 import requests
-from flask import Flask, request, jsonify, redirect, Response, render_template_string
+from urllib.parse import quote
+from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
 import yt_dlp
 
@@ -24,11 +25,15 @@ def get_base_opts():
         'noplaylist': True,
         'extractor_args': {
             'youtube': {
-                'player_client': ['web', 'ios', 'android', 'mweb']
+                'player_client': ['android', 'ios'],
+                'player_skip': ['webpage', 'configs']
             }
+        },
+        'http_headers': {
+            'User-Agent': 'com.google.android.youtube/19.29.37 (Linux; U; Android 11; en_US) gzip'
         }
     }
-    if os.path.exists(COOKIE_FILE):
+    if os.path.exists(COOKIE_FILE) and os.path.getsize(COOKIE_FILE) > 0:
         opts['cookiefile'] = COOKIE_FILE
     return opts
 
@@ -74,7 +79,7 @@ def get_media_info():
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             if not info:
-                return jsonify({"error": "Could not parse media details"}), 500
+                return jsonify({"error": "Could not extract media details"}), 500
             
             title = info.get('title') or 'FastSnap Media'
             thumbnail = info.get('thumbnail')
@@ -107,6 +112,9 @@ def download_media():
             if not info:
                 return jsonify({"error": "Unable to extract playable stream"}), 500
             
+            raw_title = info.get('title', 'FastSnap_Media')
+            clean_title = re.sub(r'[^a-zA-Z0-9_\-\s]', '', raw_title).strip() or 'FastSnap_Media'
+            
             stream_url = info.get('url')
             if not stream_url and 'formats' in info:
                 for f in reversed(info['formats']):
@@ -120,9 +128,32 @@ def download_media():
                     stream_url = info['formats'][-1].get('url')
 
             if not stream_url:
-                return jsonify({"error": "Direct stream link not found"}), 500
+                return jsonify({"error": "Direct stream not found"}), 500
 
-            return redirect(stream_url, code=302)
+            ext = 'mp3' if mode == 'audio' else 'mp4'
+            mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
+            
+            # Fetch remote headers
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': '*/*'
+            }
+            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=25)
+
+            def generate_stream():
+                for chunk in upstream.iter_content(chunk_size=1024 * 64):
+                    if chunk:
+                        yield chunk
+
+            # Return stream directly with download header
+            return Response(
+                generate_stream(),
+                content_type=mime,
+                headers={
+                    "Content-Disposition": f'attachment; filename="{clean_title}.{ext}"',
+                    "Cache-Control": "no-cache"
+                }
+            )
 
     except Exception as e:
         return jsonify({"error": f"Download failed: {str(e)}"}), 500
