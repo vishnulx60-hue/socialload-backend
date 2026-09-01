@@ -437,40 +437,53 @@
             }
         }
 
-        async function fetchMediaInfo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            const loader = document.getElementById('loader');
-            const previewCard = document.getElementById('previewCard');
+        async function triggerFileDownload(mode) {
+    if (!currentTargetUrl) return;
 
-            if (!url) {
-                alert('Please paste a media URL first.');
-                return;
-            }
+    const loader = document.getElementById('loader');
+    loader.classList.remove('hidden');
 
-            currentTargetUrl = url;
-            loader.classList.remove('hidden');
-            previewCard.classList.add('hidden');
+    if (typeof gtag === 'function') {
+        gtag('event', 'media_download', {
+            'platform': selectedPlatform,
+            'format': mode
+        });
+    }
 
-            try {
-                const res = await fetch(`/info?url=${encodeURIComponent(url)}`);
-                const data = await res.json();
-                loader.classList.add('hidden');
+    try {
+        const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
+        
+        // Fetch to verify headers before downloading
+        const response = await fetch(downloadUrl);
+        const contentType = response.headers.get('content-type') || '';
 
-                if (data.error) {
-                    alert('Could not fetch preview: ' + data.error);
-                    return;
-                }
-
-                document.getElementById('previewTitle').innerText = data.title || 'Extracted Media';
-                document.getElementById('previewThumb').src = data.thumbnail;
-                document.getElementById('previewDuration').innerText = data.duration || '';
-                previewCard.classList.remove('hidden');
-
-            } catch (err) {
-                loader.classList.add('hidden');
-                alert('Error parsing media link. Please verify URL.');
-            }
+        if (!response.ok || contentType.includes('application/json')) {
+            const errorData = await response.json();
+            loader.classList.add('hidden');
+            alert('Download Error: ' + (errorData.error || 'Failed to download file.'));
+            return;
         }
+
+        const blob = await response.blob();
+        loader.classList.add('hidden');
+
+        const objectUrl = window.URL.createObjectURL(blob);
+        const hiddenLink = document.createElement('a');
+        hiddenLink.href = objectUrl;
+        
+        // Extract title from filename header or fallback
+        const ext = mode === 'audio' ? 'mp3' : 'mp4';
+        hiddenLink.download = `FastSnap_Download.${ext}`;
+        document.body.appendChild(hiddenLink);
+        hiddenLink.click();
+        document.body.removeChild(hiddenLink);
+        window.URL.revokeObjectURL(objectUrl);
+
+    } catch (err) {
+        loader.classList.add('hidden');
+        alert('Download connection interrupted. Please try again.');
+    }
+}
 
         function triggerFileDownload(mode) {
             if (!currentTargetUrl) return;
