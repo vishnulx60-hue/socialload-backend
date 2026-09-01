@@ -7,6 +7,20 @@ import yt_dlp
 app = Flask(__name__)
 CORS(app)
 
+# Default options to bypass bot detection on datacenter IPs
+BASE_YDL_OPTS = {
+    'quiet': True,
+    'no_warnings': True,
+    'nocheckcertificate': True,
+    'source_address': '0.0.0.0',
+    'extractor_args': {
+        'youtube': {
+            'player_client': ['android', 'ios', 'web'],
+            'skip': ['dash', 'hls']
+        }
+    }
+}
+
 @app.route('/')
 def home():
     try:
@@ -22,18 +36,17 @@ def get_media_info():
         return jsonify({"error": "No URL provided"}), 400
 
     try:
-        ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
-            'skip_download': True
-        }
+        ydl_opts = {**BASE_YDL_OPTS, 'skip_download': True}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            # Find best direct streams
+            title = info.get('title', 'FastSnap_Media')
+            thumbnail = info.get('thumbnail', '')
+            duration = info.get('duration_string', '')
+            
+            # Extract progressive stream with both audio and video
             stream_url = info.get('url')
             if not stream_url and 'formats' in info:
-                # Find combined progressive or best playable video
                 for f in reversed(info['formats']):
                     if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
                         stream_url = f.get('url')
@@ -42,14 +55,13 @@ def get_media_info():
                     stream_url = info['formats'][-1].get('url')
 
             return jsonify({
-                "title": info.get('title', 'FastSnap_Media'),
-                "thumbnail": info.get('thumbnail', ''),
-                "duration": info.get('duration_string', ''),
-                "preview_url": stream_url or info.get('thumbnail', ''),
-                "url": url
+                "title": title,
+                "thumbnail": thumbnail,
+                "duration": duration,
+                "preview_url": stream_url or thumbnail
             })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Failed to extract info: {str(e)}"}), 500
 
 @app.route('/download', methods=['GET'])
 def download_media():
@@ -57,14 +69,12 @@ def download_media():
     mode = request.args.get('mode', 'video')
     
     if not url:
-        return jsonify({"error": "No media URL provided"}), 400
+        return jsonify({"error": "No URL provided"}), 400
     
     try:
-        # Audio extraction or full combined video+audio extraction
-        format_rule = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][vcodec!=none][acodec!=none]/best[ext=mp4]/best'
+        format_rule = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[ext=mp4]/best'
         ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
+            **BASE_YDL_OPTS,
             'format': format_rule
         }
         
@@ -73,19 +83,34 @@ def download_media():
             stream_url = info.get('url')
             title = info.get('title', 'FastSnap_Media').replace('"', '').replace('/', '_')
             
+            if not stream_url and 'formats' in info:
+                for f in reversed(info['formats']):
+                    if mode == 'audio' and f.get('acodec') != 'none':
+                        stream_url = f.get('url')
+                        break
+                    elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                        stream_url = f.get('url')
+                        break
+                if not stream_url:
+                    stream_url = info['formats'][-1].get('url')
+
             ext = 'mp3' if mode == 'audio' else 'mp4'
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            req = requests.get(stream_url, headers=headers, stream=True)
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Accept': '*/*'
+            }
+            
+            req = requests.get(stream_url, headers=headers, stream=True, timeout=30)
             
             return Response(
-                req.iter_content(chunk_size=8192),
+                req.iter_content(chunk_size=1024 * 16),
                 content_type=req.headers.get('content-type', 'application/octet-stream'),
                 headers={
                     "Content-Disposition": f'attachment; filename="{title}.{ext}"'
                 }
             )
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Download failed: {str(e)}"}), 500
 
 @app.route('/robots.txt')
 def robots():
