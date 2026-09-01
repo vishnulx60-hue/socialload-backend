@@ -1,7 +1,6 @@
 import os
 import re
 import requests
-from urllib.parse import quote
 from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
 import yt_dlp
@@ -103,7 +102,7 @@ def download_media():
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             if not info:
-                return jsonify({"error": "Unable to extract stream info"}), 500
+                return jsonify({"error": "Unable to fetch video formats"}), 500
             
             raw_title = info.get('title', 'FastSnap_Media')
             clean_title = re.sub(r'[^a-zA-Z0-9_\-\s]', '', raw_title).strip() or 'FastSnap_Media'
@@ -124,24 +123,27 @@ def download_media():
                 return jsonify({"error": "Direct playable stream link not found"}), 500
 
             ext = 'mp3' if mode == 'audio' else 'mp4'
+            mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
+
+            # Stream data directly
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': '*/*'
             }
+            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=20)
             
-            req = requests.get(stream_url, headers=headers, stream=True, timeout=60)
-            
-            if req.status_code != 200:
-                return jsonify({"error": f"Upstream source rejected stream (HTTP {req.status_code})"}), 500
+            if upstream.status_code != 200:
+                return jsonify({"error": f"Upstream source returned HTTP {upstream.status_code}"}), 500
 
-            mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
-            return Response(
-                req.iter_content(chunk_size=1024 * 32),
-                content_type=mime,
-                headers={
-                    "Content-Disposition": f'attachment; filename="{clean_title}.{ext}"'
-                }
-            )
+            def generate_stream():
+                for chunk in upstream.iter_content(chunk_size=1024 * 64):
+                    if chunk:
+                        yield chunk
+
+            response = Response(generate_stream(), content_type=mime)
+            response.headers["Content-Disposition"] = f'attachment; filename="{clean_title}.{ext}"'
+            return response
+
     except Exception as e:
         return jsonify({"error": f"Download failed: {str(e)}"}), 500
 
