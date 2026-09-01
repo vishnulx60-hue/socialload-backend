@@ -437,7 +437,7 @@
             }
         }
 
-        async function triggerFileDownload(mode) {
+       function triggerFileDownload(mode) {
     if (!currentTargetUrl) return;
 
     const loader = document.getElementById('loader');
@@ -450,6 +450,19 @@
         });
     }
 
+    const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
+
+    // Direct window trigger for native browser download streaming
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = downloadUrl;
+    document.body.appendChild(iframe);
+
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        setTimeout(() => document.body.removeChild(iframe), 60000);
+    }, 2500);
+}
     try {
         const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
         
