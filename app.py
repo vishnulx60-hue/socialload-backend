@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from urllib.parse import quote
 from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
 import yt_dlp
@@ -48,7 +49,6 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # 1. Fast path for YouTube links via official oEmbed API (bypasses bot blocks completely)
     yt_id = get_youtube_video_id(url)
     if yt_id:
         try:
@@ -63,9 +63,8 @@ def get_media_info():
                     "url": url
                 })
         except Exception:
-            pass  # Fallback to standard yt-dlp if oembed fails
+            pass
 
-    # 2. Universal metadata extraction for Instagram, TikTok, etc.
     try:
         opts = get_base_opts()
         opts['skip_download'] = True
@@ -99,15 +98,15 @@ def download_media():
     
     try:
         opts = get_base_opts()
-        # Grab progressive combined MP4 or audio stream
         opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
         
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             if not info:
-                return jsonify({"error": "Unable to extract stream"}), 500
-                
-            title = (info.get('title') or 'FastSnap_Media').replace('"', '').replace('/', '_')
+                return jsonify({"error": "Unable to extract stream info"}), 500
+            
+            raw_title = info.get('title', 'FastSnap_Media')
+            clean_title = re.sub(r'[^a-zA-Z0-9_\-\s]', '', raw_title).strip() or 'FastSnap_Media'
             
             stream_url = info.get('url')
             if not stream_url and 'formats' in info:
@@ -122,7 +121,7 @@ def download_media():
                     stream_url = info['formats'][-1].get('url')
 
             if not stream_url:
-                return jsonify({"error": "Direct stream not found"}), 500
+                return jsonify({"error": "Direct playable stream link not found"}), 500
 
             ext = 'mp3' if mode == 'audio' else 'mp4'
             headers = {
@@ -132,11 +131,15 @@ def download_media():
             
             req = requests.get(stream_url, headers=headers, stream=True, timeout=60)
             
+            if req.status_code != 200:
+                return jsonify({"error": f"Upstream source rejected stream (HTTP {req.status_code})"}), 500
+
+            mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
             return Response(
                 req.iter_content(chunk_size=1024 * 32),
-                content_type=req.headers.get('content-type', 'application/octet-stream'),
+                content_type=mime,
                 headers={
-                    "Content-Disposition": f'attachment; filename="{title}.{ext}"'
+                    "Content-Disposition": f'attachment; filename="{clean_title}.{ext}"'
                 }
             )
     except Exception as e:
