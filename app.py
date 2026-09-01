@@ -7,21 +7,29 @@ import yt_dlp
 app = Flask(__name__)
 CORS(app)
 
-# Default options to bypass bot detection on datacenter IPs
-BASE_YDL_OPTS = {
-    'quiet': True,
-    'no_warnings': True,
-    'nocheckcertificate': True,
-    'extractor_args': {
-        'youtube': {
-            'player_client': ['mweb', 'android_creator', 'ios'],
-            'player_skip': ['webpage', 'configs']
+# Write cookie file from environment variable if present
+COOKIE_FILE = '/tmp/yt_cookies.txt'
+if os.environ.get('YOUTUBE_COOKIES'):
+    with open(COOKIE_FILE, 'w', encoding='utf-8') as f:
+        f.write(os.environ.get('YOUTUBE_COOKIES'))
+
+def get_ydl_opts(extra_opts=None):
+    opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'nocheckcertificate': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web', 'ios', 'android']
+            }
         }
-    },
-    'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1'
     }
-}
+    if os.path.exists(COOKIE_FILE):
+        opts['cookiefile'] = COOKIE_FILE
+        
+    if extra_opts:
+        opts.update(extra_opts)
+    return opts
 
 @app.route('/')
 def home():
@@ -38,7 +46,7 @@ def get_media_info():
         return jsonify({"error": "No URL provided"}), 400
 
     try:
-        ydl_opts = {**BASE_YDL_OPTS, 'skip_download': True}
+        ydl_opts = get_ydl_opts({'skip_download': True})
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
@@ -46,7 +54,6 @@ def get_media_info():
             thumbnail = info.get('thumbnail', '')
             duration = info.get('duration_string', '')
             
-            # Extract progressive stream with both audio and video
             stream_url = info.get('url')
             if not stream_url and 'formats' in info:
                 for f in reversed(info['formats']):
@@ -75,10 +82,7 @@ def download_media():
     
     try:
         format_rule = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[ext=mp4]/best'
-        ydl_opts = {
-            **BASE_YDL_OPTS,
-            'format': format_rule
-        }
+        ydl_opts = get_ydl_opts({'format': format_rule})
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
