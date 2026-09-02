@@ -1,7 +1,6 @@
 import os
 import re
 import requests
-from urllib.parse import quote
 from flask import Flask, request, jsonify, Response, render_template_string
 from flask_cors import CORS
 import yt_dlp
@@ -17,16 +16,19 @@ if os.environ.get('YOUTUBE_COOKIES'):
     except Exception:
         pass
 
+DEFAULT_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+
 def get_base_opts():
     opts = {
         'quiet': True,
         'no_warnings': True,
         'nocheckcertificate': True,
         'noplaylist': True,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['mweb', 'android', 'ios']
-            }
+        'http_headers': {
+            'User-Agent': DEFAULT_UA,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Sec-Fetch-Mode': 'navigate'
         }
     }
     if os.path.exists(COOKIE_FILE) and os.path.getsize(COOKIE_FILE) > 0:
@@ -37,6 +39,30 @@ def get_youtube_video_id(url):
     pattern = r'(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|user\/\S+|feeds\/api\/videos\/|.*[?&]v=))([\w-]{11})'
     match = re.search(pattern, url)
     return match.group(1) if match else None
+
+# Fallback resolver using Cobalt API when datacenter IPs are bot-blocked
+def resolve_via_cobalt(url, mode='video'):
+    try:
+        payload = {
+            'url': url,
+            'downloadMode': 'audio' if mode == 'audio' else 'auto'
+        }
+        res = requests.post(
+            'https://api.cobalt.tools/',
+            json=payload,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'User-Agent': DEFAULT_UA
+            },
+            timeout=10
+        )
+        if res.status_code == 200:
+            data = res.json()
+            return data.get('url')
+    except Exception:
+        pass
+    return None
 
 @app.route('/')
 def home():
@@ -62,6 +88,22 @@ def get_media_info():
                 return jsonify({
                     "title": data.get('title', 'YouTube Video'),
                     "thumbnail": f"https://img.youtube.com/vi/{yt_id}/hqdefault.jpg",
+                    "duration": "HD",
+                    "url": url
+                })
+        except Exception:
+            pass
+
+    # TikTok oEmbed quick path
+    if 'tiktok.com' in url:
+        try:
+            tt_oembed = f"https://www.tiktok.com/oembed?url={url}"
+            resp = requests.get(tt_oembed, headers={'User-Agent': DEFAULT_UA}, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                return jsonify({
+                    "title": data.get('title', 'TikTok Video'),
+                    "thumbnail": data.get('thumbnail_url', ''),
                     "duration": "HD",
                     "url": url
                 })
@@ -98,59 +140,63 @@ def download_media():
     
     if not url:
         return jsonify({"error": "No URL provided"}), 400
+
+    stream_url = None
+    clean_title = 'FastSnap_Media'
     
+    # 1. Try yt-dlp first
     try:
         opts = get_base_opts()
         opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4]/best'
         
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            if not info:
-                return jsonify({"error": "Unable to extract playable stream"}), 500
-            
-            raw_title = info.get('title', 'FastSnap_Media')
-            clean_title = re.sub(r'[^a-zA-Z0-9_\-\s]', '', raw_title).strip() or 'FastSnap_Media'
-            
-            stream_url = info.get('url')
-            if not stream_url and 'formats' in info:
-                for f in reversed(info['formats']):
-                    if mode == 'audio' and f.get('acodec') != 'none':
-                        stream_url = f.get('url')
-                        break
-                    elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                        stream_url = f.get('url')
-                        break
-                if not stream_url and info['formats']:
-                    stream_url = info['formats'][-1].get('url')
+            if info:
+                raw_title = info.get('title', 'FastSnap_Media')
+                clean_title = re.sub(r'[^a-zA-Z0-9_\-\s]', '', raw_title).strip() or 'FastSnap_Media'
+                stream_url = info.get('url')
+                if not stream_url and 'formats' in info:
+                    for f in reversed(info['formats']):
+                        if mode == 'audio' and f.get('acodec') != 'none':
+                            stream_url = f.get('url')
+                            break
+                        elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                            stream_url = f.get('url')
+                            break
+                    if not stream_url and info['formats']:
+                        stream_url = info['formats'][-1].get('url')
+    except Exception:
+        pass
 
-            if not stream_url:
-                return jsonify({"error": "Direct stream not found"}), 500
+    # 2. Resilient fallback for YouTube / TikTok blocks
+    if not stream_url:
+        stream_url = resolve_via_cobalt(url, mode)
 
-            ext = 'mp3' if mode == 'audio' else 'mp4'
-            mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
-            
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': '*/*'
+    if not stream_url:
+        return jsonify({"error": "Download failed. The platform blocked this datacenter request. Try again shortly."}), 500
+
+    ext = 'mp3' if mode == 'audio' else 'mp4'
+    mime = 'audio/mpeg' if mode == 'audio' else 'video/mp4'
+
+    headers = {'User-Agent': DEFAULT_UA, 'Accept': '*/*'}
+    try:
+        upstream = requests.get(stream_url, headers=headers, stream=True, timeout=25)
+        
+        def generate_stream():
+            for chunk in upstream.iter_content(chunk_size=1024 * 64):
+                if chunk:
+                    yield chunk
+
+        return Response(
+            generate_stream(),
+            content_type=mime,
+            headers={
+                "Content-Disposition": f'attachment; filename="{clean_title}.{ext}"',
+                "Cache-Control": "no-cache"
             }
-            upstream = requests.get(stream_url, headers=headers, stream=True, timeout=30)
-
-            def generate_stream():
-                for chunk in upstream.iter_content(chunk_size=1024 * 64):
-                    if chunk:
-                        yield chunk
-
-            return Response(
-                generate_stream(),
-                content_type=mime,
-                headers={
-                    "Content-Disposition": f'attachment; filename="{clean_title}.{ext}"',
-                    "Cache-Control": "no-cache"
-                }
-            )
-
+        )
     except Exception as e:
-        return jsonify({"error": f"Download failed: {str(e)}"}), 500
+        return jsonify({"error": f"Failed to stream file: {str(e)}"}), 500
 
 @app.route('/robots.txt')
 def robots():
