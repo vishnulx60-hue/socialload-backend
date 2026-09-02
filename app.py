@@ -44,6 +44,36 @@ def get_youtube_video_id(url):
     match = re.search(pattern, url)
     return match.group(1) if match else None
 
+# Fallback extractor via public Cobalt instance for datacenter IP blocks
+def fetch_fallback_stream(url, mode='video'):
+    instances = [
+        "https://api.cobalt.tools",
+        "https://cobalt-api.kwiatekm.tokyo"
+    ]
+    for base in instances:
+        try:
+            payload = {
+                "url": url,
+                "downloadMode": "audio" if mode == "audio" else "auto"
+            }
+            res = requests.post(
+                f"{base}/",
+                json=payload,
+                headers={
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "User-Agent": DEFAULT_UA
+                },
+                timeout=7
+            )
+            if res.status_code == 200:
+                data = res.json()
+                if "url" in data:
+                    return data["url"]
+        except Exception:
+            continue
+    return None
+
 @app.route('/')
 def home():
     try:
@@ -58,6 +88,7 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
+    # 1. Fast path: YouTube
     yt_id = get_youtube_video_id(url)
     if yt_id:
         try:
@@ -74,6 +105,23 @@ def get_media_info():
         except Exception:
             pass
 
+    # 2. Fast path: Instagram (bypasses "empty media response" login block)
+    if 'instagram.com' in url:
+        try:
+            ig_oembed = f"https://api.instagram.com/oembed/?url={url}"
+            resp = requests.get(ig_oembed, headers={'User-Agent': DEFAULT_UA}, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                return jsonify({
+                    "title": data.get('title') or "Instagram Reel / Post",
+                    "thumbnail": data.get('thumbnail_url') or '',
+                    "duration": "HD",
+                    "url": url
+                })
+        except Exception:
+            pass
+
+    # 3. Fast path: TikTok
     if 'tiktok.com' in url:
         try:
             tt_oembed = f"https://www.tiktok.com/oembed?url={url}"
@@ -89,6 +137,7 @@ def get_media_info():
         except Exception:
             pass
 
+    # 4. Standard yt-dlp fallback
     try:
         opts = get_base_opts()
         opts['skip_download'] = True
@@ -120,39 +169,38 @@ def download_media():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
+    stream_url = None
+
+    # Step A: Attempt extraction via yt-dlp
     try:
         opts = get_base_opts()
-        # Prioritize progressive streams that contain both audio and video
-        if mode == 'audio':
-            opts['format'] = 'bestaudio/best'
-        else:
-            opts['format'] = 'best[ext=mp4][acodec!=none]/best[acodec!=none]/best'
+        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[acodec!=none]/best'
         
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            if not info:
-                return jsonify({"error": "Unable to extract stream"}), 500
-            
-            stream_url = info.get('url')
-            if not stream_url and 'formats' in info:
-                for f in reversed(info['formats']):
-                    if mode == 'audio' and f.get('acodec') != 'none':
-                        stream_url = f.get('url')
-                        break
-                    elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                        stream_url = f.get('url')
-                        break
-                if not stream_url and info['formats']:
-                    stream_url = info['formats'][-1].get('url')
+            if info:
+                stream_url = info.get('url')
+                if not stream_url and 'formats' in info:
+                    for f in reversed(info['formats']):
+                        if mode == 'audio' and f.get('acodec') != 'none':
+                            stream_url = f.get('url')
+                            break
+                        elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                            stream_url = f.get('url')
+                            break
+                    if not stream_url and info['formats']:
+                        stream_url = info['formats'][-1].get('url')
+    except Exception:
+        pass
 
-            if not stream_url:
-                return jsonify({"error": "Direct playable link not found"}), 500
+    # Step B: If blocked by datacenter IP restrictions, resolve through fallback gateway
+    if not stream_url:
+        stream_url = fetch_fallback_stream(url, mode)
 
-            # Direct redirect prevents server proxy timeouts and broken 403 HTML downloads
-            return redirect(stream_url, code=302)
+    if not stream_url:
+        return jsonify({"error": "This video stream is currently restricted by the platform. Please try another link."}), 500
 
-    except Exception as e:
-        return jsonify({"error": f"Extraction failed: {str(e)}"}), 500
+    return redirect(stream_url, code=302)
 
 @app.route('/robots.txt')
 def robots():
