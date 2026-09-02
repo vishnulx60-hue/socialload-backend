@@ -440,7 +440,7 @@
             }
         }
 
-       function triggerFileDownload(mode) {
+     function triggerFileDownload(mode) {
     if (!currentTargetUrl) return;
 
     const loader = document.getElementById('loader');
@@ -454,14 +454,7 @@
     }
 
     const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
-
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', '');
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.location.href = downloadUrl;
 
     setTimeout(() => {
         loader.classList.add('hidden');
