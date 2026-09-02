@@ -440,7 +440,7 @@
             }
         }
 
-        function triggerFileDownload(mode) {
+       function triggerFileDownload(mode) {
     if (!currentTargetUrl) return;
 
     const loader = document.getElementById('loader');
@@ -454,15 +454,17 @@
     }
 
     const downloadUrl = `/download?url=${encodeURIComponent(currentTargetUrl)}&mode=${mode}`;
-    
-    const hiddenIframe = document.createElement('iframe');
-    hiddenIframe.style.display = 'none';
-    hiddenIframe.src = downloadUrl;
-    document.body.appendChild(hiddenIframe);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', '');
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     setTimeout(() => {
         loader.classList.add('hidden');
-        setTimeout(() => document.body.removeChild(hiddenIframe), 60000);
     }, 2000);
 }
 
