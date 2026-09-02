@@ -44,20 +44,19 @@ def get_youtube_video_id(url):
     match = re.search(pattern, url)
     return match.group(1) if match else None
 
-# Fallback extractor via public Cobalt instance for datacenter IP blocks
 def fetch_fallback_stream(url, mode='video'):
-    instances = [
+    endpoints = [
         "https://api.cobalt.tools",
         "https://cobalt-api.kwiatekm.tokyo"
     ]
-    for base in instances:
+    for ep in endpoints:
         try:
             payload = {
                 "url": url,
                 "downloadMode": "audio" if mode == "audio" else "auto"
             }
             res = requests.post(
-                f"{base}/",
+                f"{ep}/",
                 json=payload,
                 headers={
                     "Accept": "application/json",
@@ -88,7 +87,7 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # 1. Fast path: YouTube
+    # 1. Fast Path: YouTube via oEmbed
     yt_id = get_youtube_video_id(url)
     if yt_id:
         try:
@@ -105,23 +104,33 @@ def get_media_info():
         except Exception:
             pass
 
-    # 2. Fast path: Instagram (bypasses "empty media response" login block)
+    # 2. Fast Path: Instagram via InstaFix / ddinstagram (bypasses Meta datacenter blocks)
     if 'instagram.com' in url:
         try:
-            ig_oembed = f"https://api.instagram.com/oembed/?url={url}"
-            resp = requests.get(ig_oembed, headers={'User-Agent': DEFAULT_UA}, timeout=5)
+            fixed_url = re.sub(r'https?:\/\/(www\.)?instagram\.com', 'https://ddinstagram.com', url)
+            headers = {'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'}
+            resp = requests.get(fixed_url, headers=headers, timeout=6)
             if resp.status_code == 200:
-                data = resp.json()
+                html = resp.text
+                
+                # Extract og:image
+                thumb_match = re.search(r'<meta property="og:image" content="([^"]+)"', html)
+                thumbnail = thumb_match.group(1) if thumb_match else ''
+                
+                # Extract og:title or description
+                title_match = re.search(r'<meta property="og:title" content="([^"]+)"', html)
+                title = title_match.group(1) if title_match else 'Instagram Reel'
+                
                 return jsonify({
-                    "title": data.get('title') or "Instagram Reel / Post",
-                    "thumbnail": data.get('thumbnail_url') or '',
+                    "title": title,
+                    "thumbnail": thumbnail,
                     "duration": "HD",
                     "url": url
                 })
         except Exception:
             pass
 
-    # 3. Fast path: TikTok
+    # 3. Fast Path: TikTok via oEmbed
     if 'tiktok.com' in url:
         try:
             tt_oembed = f"https://www.tiktok.com/oembed?url={url}"
@@ -171,34 +180,50 @@ def download_media():
 
     stream_url = None
 
-    # Step A: Attempt extraction via yt-dlp
-    try:
-        opts = get_base_opts()
-        opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[acodec!=none]/best'
-        
-        with yt_dlp.YoutubeDL(opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            if info:
-                stream_url = info.get('url')
-                if not stream_url and 'formats' in info:
-                    for f in reversed(info['formats']):
-                        if mode == 'audio' and f.get('acodec') != 'none':
-                            stream_url = f.get('url')
-                            break
-                        elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
-                            stream_url = f.get('url')
-                            break
-                    if not stream_url and info['formats']:
-                        stream_url = info['formats'][-1].get('url')
-    except Exception:
-        pass
+    # For Instagram: use direct media stream resolution via ddinstagram
+    if 'instagram.com' in url:
+        try:
+            fixed_url = re.sub(r'https?:\/\/(www\.)?instagram\.com', 'https://ddinstagram.com', url)
+            headers = {'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'}
+            resp = requests.get(fixed_url, headers=headers, timeout=6)
+            if resp.status_code == 200:
+                video_match = re.search(r'<meta property="og:video" content="([^"]+)"', resp.text)
+                if not video_match:
+                    video_match = re.search(r'<meta property="og:video:secure_url" content="([^"]+)"', resp.text)
+                if video_match:
+                    stream_url = video_match.group(1).replace('&amp;', '&')
+        except Exception:
+            pass
 
-    # Step B: If blocked by datacenter IP restrictions, resolve through fallback gateway
+    # Try yt-dlp extraction
+    if not stream_url:
+        try:
+            opts = get_base_opts()
+            opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[acodec!=none]/best'
+            
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                if info:
+                    stream_url = info.get('url')
+                    if not stream_url and 'formats' in info:
+                        for f in reversed(info['formats']):
+                            if mode == 'audio' and f.get('acodec') != 'none':
+                                stream_url = f.get('url')
+                                break
+                            elif f.get('vcodec') != 'none' and f.get('acodec') != 'none':
+                                stream_url = f.get('url')
+                                break
+                        if not stream_url and info['formats']:
+                            stream_url = info['formats'][-1].get('url')
+        except Exception:
+            pass
+
+    # Fallback resolver for TikTok and YouTube bot blocks
     if not stream_url:
         stream_url = fetch_fallback_stream(url, mode)
 
     if not stream_url:
-        return jsonify({"error": "This video stream is currently restricted by the platform. Please try another link."}), 500
+        return jsonify({"error": "Platform restricted this stream. Please test another link."}), 500
 
     return redirect(stream_url, code=302)
 
