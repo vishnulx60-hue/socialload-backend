@@ -18,6 +18,14 @@ if os.environ.get('YOUTUBE_COOKIES'):
 
 DEFAULT_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
 
+# Multiple active public resolver instances to bypass datacenter blocks
+RESOLVER_INSTANCES = [
+    "https://api.cobalt.tools",
+    "https://cobalt-api.kwiatekm.tokyo",
+    "https://cobalt.kwiatek.xyz",
+    "https://dl.khub.win"
+]
+
 def get_base_opts():
     opts = {
         'quiet': True,
@@ -44,31 +52,45 @@ def get_youtube_video_id(url):
     match = re.search(pattern, url)
     return match.group(1) if match else None
 
-def fetch_fallback_stream(url, mode='video'):
-    endpoints = [
-        "https://api.cobalt.tools",
-        "https://cobalt-api.kwiatekm.tokyo"
-    ]
-    for ep in endpoints:
+def get_instagram_shortcode(url):
+    match = re.search(r'instagram\.com\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)', url)
+    return match.group(1) if match else None
+
+def resolve_external_media(url, mode='video'):
+    for base in RESOLVER_INSTANCES:
         try:
             payload = {
                 "url": url,
-                "downloadMode": "audio" if mode == "audio" else "auto"
+                "downloadMode": "audio" if mode == "audio" else "auto",
+                "videoQuality": "720"
             }
             res = requests.post(
-                f"{ep}/",
+                f"{base}/",
                 json=payload,
                 headers={
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                     "User-Agent": DEFAULT_UA
                 },
-                timeout=7
+                timeout=6
             )
             if res.status_code == 200:
                 data = res.json()
+                # Direct stream URL (redirect or tunnel)
                 if "url" in data:
-                    return data["url"]
+                    return {
+                        "stream_url": data["url"],
+                        "thumb": data.get("thumb", ""),
+                        "title": data.get("title", "")
+                    }
+                # Multi-item / Picker response (common for Instagram reels & carousels)
+                if "picker" in data and len(data["picker"]) > 0:
+                    item = data["picker"][0]
+                    return {
+                        "stream_url": item.get("url"),
+                        "thumb": item.get("thumb", ""),
+                        "title": data.get("title", "")
+                    }
         except Exception:
             continue
     return None
@@ -87,7 +109,7 @@ def get_media_info():
     if not url:
         return jsonify({"error": "No URL provided"}), 400
 
-    # 1. Fast Path: YouTube via oEmbed
+    # 1. Fast Path: YouTube via official oEmbed
     yt_id = get_youtube_video_id(url)
     if yt_id:
         try:
@@ -104,31 +126,24 @@ def get_media_info():
         except Exception:
             pass
 
-    # 2. Fast Path: Instagram via InstaFix / ddinstagram (bypasses Meta datacenter blocks)
+    # 2. Fast Path: Instagram (Resolves external proxy to avoid Meta datacenter bans)
     if 'instagram.com' in url:
-        try:
-            fixed_url = re.sub(r'https?:\/\/(www\.)?instagram\.com', 'https://ddinstagram.com', url)
-            headers = {'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'}
-            resp = requests.get(fixed_url, headers=headers, timeout=6)
-            if resp.status_code == 200:
-                html = resp.text
-                
-                # Extract og:image
-                thumb_match = re.search(r'<meta property="og:image" content="([^"]+)"', html)
-                thumbnail = thumb_match.group(1) if thumb_match else ''
-                
-                # Extract og:title or description
-                title_match = re.search(r'<meta property="og:title" content="([^"]+)"', html)
-                title = title_match.group(1) if title_match else 'Instagram Reel'
-                
-                return jsonify({
-                    "title": title,
-                    "thumbnail": thumbnail,
-                    "duration": "HD",
-                    "url": url
-                })
-        except Exception:
-            pass
+        shortcode = get_instagram_shortcode(url) or "Reel"
+        media_data = resolve_external_media(url)
+        
+        thumbnail = ""
+        title = "Instagram Reel"
+        
+        if media_data:
+            thumbnail = media_data.get("thumb") or ""
+            title = media_data.get("title") or f"Instagram Post ({shortcode})"
+            
+        return jsonify({
+            "title": title,
+            "thumbnail": thumbnail,
+            "duration": "HD",
+            "url": url
+        })
 
     # 3. Fast Path: TikTok via oEmbed
     if 'tiktok.com' in url:
@@ -146,7 +161,7 @@ def get_media_info():
         except Exception:
             pass
 
-    # 4. Standard yt-dlp fallback
+    # 4. Fallback for other platforms via yt-dlp
     try:
         opts = get_base_opts()
         opts['skip_download'] = True
@@ -180,23 +195,13 @@ def download_media():
 
     stream_url = None
 
-    # For Instagram: use direct media stream resolution via ddinstagram
-    if 'instagram.com' in url:
-        try:
-            fixed_url = re.sub(r'https?:\/\/(www\.)?instagram\.com', 'https://ddinstagram.com', url)
-            headers = {'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'}
-            resp = requests.get(fixed_url, headers=headers, timeout=6)
-            if resp.status_code == 200:
-                video_match = re.search(r'<meta property="og:video" content="([^"]+)"', resp.text)
-                if not video_match:
-                    video_match = re.search(r'<meta property="og:video:secure_url" content="([^"]+)"', resp.text)
-                if video_match:
-                    stream_url = video_match.group(1).replace('&amp;', '&')
-        except Exception:
-            pass
+    # Step 1: Resolve via external network to avoid datacenter IP bans
+    resolved = resolve_external_media(url, mode)
+    if resolved and resolved.get("stream_url"):
+        stream_url = resolved["stream_url"]
 
-    # Try yt-dlp extraction
-    if not stream_url:
+    # Step 2: yt-dlp fallback if external resolution didn't catch it
+    if not stream_url and 'instagram.com' not in url:
         try:
             opts = get_base_opts()
             opts['format'] = 'bestaudio/best' if mode == 'audio' else 'best[ext=mp4][acodec!=none]/best[acodec!=none]/best'
@@ -218,12 +223,8 @@ def download_media():
         except Exception:
             pass
 
-    # Fallback resolver for TikTok and YouTube bot blocks
     if not stream_url:
-        stream_url = fetch_fallback_stream(url, mode)
-
-    if not stream_url:
-        return jsonify({"error": "Platform restricted this stream. Please test another link."}), 500
+        return jsonify({"error": "This video stream is currently restricted by the platform. Please try again shortly."}), 500
 
     return redirect(stream_url, code=302)
 
