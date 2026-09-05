@@ -17,6 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 COOKIE_FILE = "/tmp/media_cookies.txt"
+SECRET_COOKIE_FILE = os.environ.get("MEDIA_COOKIES_FILE", "/etc/secrets/media_cookies.txt")
 DEFAULT_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -29,6 +30,12 @@ class MediaResolutionError(Exception):
 
 
 def configure_cookies():
+    # Render Secret Files are preferable to environment variables because a
+    # browser-cookie export can be multi-line and is sensitive account data.
+    if os.path.isfile(SECRET_COOKIE_FILE) and os.path.getsize(SECRET_COOKIE_FILE):
+        logger.info("Using media cookie secret file")
+        return
+
     # MEDIA_COOKIES is a Netscape-format cookie export that yt-dlp can use for
     # any supported provider. Keep YOUTUBE_COOKIES as a backwards-compatible
     # fallback for existing Render deployments.
@@ -44,6 +51,13 @@ def configure_cookies():
 
 
 configure_cookies()
+
+
+def active_cookie_file():
+    for path in (SECRET_COOKIE_FILE, COOKIE_FILE):
+        if os.path.isfile(path) and os.path.getsize(path):
+            return path
+    return None
 
 
 def validate_media_url(value):
@@ -69,8 +83,9 @@ def get_base_opts():
             "Accept-Language": "en-US,en;q=0.9",
         },
     }
-    if os.path.isfile(COOKIE_FILE) and os.path.getsize(COOKIE_FILE):
-        options["cookiefile"] = COOKIE_FILE
+    cookie_file = active_cookie_file()
+    if cookie_file:
+        options["cookiefile"] = cookie_file
     return options
 
 
@@ -188,9 +203,9 @@ def resolve_stream(url, mode):
         return instagram["stream_url"]
     info = resolve_with_ytdlp(url, download=True, mode=mode)
     if not info:
-        if "instagram.com" in url and not os.path.isfile(COOKIE_FILE):
+        if "instagram.com" in url:
             raise MediaResolutionError(
-                "Instagram requires a signed-in session for this link. Add a MEDIA_COOKIES secret in Render, then redeploy."
+                "Instagram did not authorize the server for this link. Add or refresh the media_cookies.txt Secret File in Render, then redeploy."
             )
         raise MediaResolutionError("The platform rejected this request. See the Render logs for the provider's response.")
     stream = info.get("url")
