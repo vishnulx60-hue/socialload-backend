@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
-COOKIE_FILE = "/tmp/yt_cookies.txt"
+COOKIE_FILE = "/tmp/media_cookies.txt"
 DEFAULT_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -29,7 +29,10 @@ class MediaResolutionError(Exception):
 
 
 def configure_cookies():
-    cookies = os.environ.get("YOUTUBE_COOKIES")
+    # MEDIA_COOKIES is a Netscape-format cookie export that yt-dlp can use for
+    # any supported provider. Keep YOUTUBE_COOKIES as a backwards-compatible
+    # fallback for existing Render deployments.
+    cookies = os.environ.get("MEDIA_COOKIES") or os.environ.get("YOUTUBE_COOKIES")
     if not cookies:
         return
     try:
@@ -185,6 +188,10 @@ def resolve_stream(url, mode):
         return instagram["stream_url"]
     info = resolve_with_ytdlp(url, download=True, mode=mode)
     if not info:
+        if "instagram.com" in url and not os.path.isfile(COOKIE_FILE):
+            raise MediaResolutionError(
+                "Instagram requires a signed-in session for this link. Add a MEDIA_COOKIES secret in Render, then redeploy."
+            )
         raise MediaResolutionError("The platform rejected this request. See the Render logs for the provider's response.")
     stream = info.get("url")
     if not stream:
